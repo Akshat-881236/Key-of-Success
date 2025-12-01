@@ -16,6 +16,8 @@
       background:#f7f9fc;
       padding-top:56px;
     }
+
+    /* Topbar */
     .topbar {
       position:fixed; top:0; left:0; right:0; height:56px;
       background:#fff; border-bottom:1px solid #e9ecef; z-index:1100;
@@ -23,19 +25,26 @@
     }
     .brand { display:flex; gap:.5rem; align-items:center; color:var(--brand); font-weight:700; }
 
+    /* Sidebar */
     .sidebar {
       position:fixed; top:56px; left:0; bottom:0; width:var(--sidebar-width);
       background:#fff; border-right:1px solid #e9ecef; padding:12px; overflow:auto;
-      transition: transform .22s ease;
+      transition: transform .22s ease, width .22s ease;
     }
-    .sidebar.hidden { transform: translateX(-110%); }
+    /* Desktop collapse */
+    .sidebar.collapsed { transform: translateX(-110%); }
 
+    /* Mobile overlay control (use .show to display in mobile) */
+    @media (max-width:991px) {
+      .sidebar { transform: translateX(-110%); position:fixed; z-index:1200; box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+      .sidebar.show { transform: translateX(0); }
+    }
+
+    /* Content area */
     .content { margin-left:var(--sidebar-width); padding:20px; transition: margin-left .22s ease; }
-    .sidebar.hidden ~ .content { margin-left:0; }
+    .sidebar.collapsed ~ .content { margin-left:0; }
 
     @media (max-width:991px) {
-      .sidebar { transform:translateX(-110%); }
-      .sidebar.show { transform:translateX(0); }
       .content { margin-left:0; }
     }
 
@@ -44,12 +53,22 @@
     .small-note { color:#6c757d; font-size:.9rem; }
     .required { color:#d63384; }
     pre.md { background:#f8f9fa; padding:12px; border-radius:6px; white-space:pre-wrap; }
+
+    /* helper: visible-only-on-desktop and mobile */
+    .desktop-only { display:inline-block; }
+    .mobile-only { display:none; }
+    @media (max-width:991px) { .desktop-only { display:none; } .mobile-only { display:inline-block; } }
+
+    /* active nav */
+    .nav .nav-link.active { background:#eef5ff; border-radius:6px; color:var(--brand); font-weight:600; }
   </style>
 </head>
 <body>
 
   <header class="topbar">
-    <button id="menuBtn" class="menu-btn" title="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"></path></svg></button>
+    <button id="menuBtn" class="menu-btn" title="Toggle menu" aria-label="Toggle menu">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"></path></svg>
+    </button>
 
     <div class="brand ms-2">
       <svg width="18" height="18" viewBox="0 0 24 24" style="margin-right:6px"><path fill="currentColor" d="M12 2L1 7l11 5 9-4.09V17h2V6L12 2z"></path></svg>
@@ -60,7 +79,7 @@
     </div>
 
     <div class="ms-auto d-flex align-items-center gap-2">
-      <span class="badge bg-info text-dark">For administrative use only — <a href="https://akshat-881236.github.io/Portfolio-881236/localStorage.htm">Local Storage</a></span>
+      <span class="badge bg-info text-dark desktop-only">For administrative use only — <a href="https://akshat-881236.github.io/Portfolio-881236/localStorage.htm" target="_blank" rel="noopener">Local Storage</a></span>
       <button id="openSettingsBtn" class="btn btn-outline-secondary btn-sm">Settings</button>
       <button id="openReadme" class="btn btn-outline-secondary btn-sm">README</button>
       <button id="openLicense" class="btn btn-outline-secondary btn-sm">License</button>
@@ -80,9 +99,10 @@
 
       <li class="nav-item mt-3"><hr /></li>
 
-      <li class="nav-item"><a href=/Key-of-Success/owner.htm" class="nav-link" data-ajax="owner.htm">About Owner</a></li>
+      <!-- fixed hrefs removed; we use data-ajax to fetch local files -->
+      <li class="nav-item"><a href="/Key-of-Success/owner.htm" class="nav-link" data-ajax="owner.htm">About Owner</a></li>
       <li class="nav-item"><a href="/Key-of-Success/privacy_policy.htm" class="nav-link" data-ajax="privacy_policy.htm">Privacy Policy</a></li>
-      <li class="nav-item"><a href="#" class="nav-link" data-ajax="term_condition.htm">Terms & Conditions</a></li>
+      <li class="nav-item"><a href="Key-of-Success\term_condition.htm" class="nav-link" data-ajax="term_condition.htm">Terms & Conditions</a></li>
     </ul>
 
     <div class="mt-4 small-note">
@@ -91,7 +111,7 @@
     </div>
   </nav>
 
-  <main id="main" class="content">
+  <main id="main" class="content" tabindex="-1">
     <div id="view-home">
       <div class="portal-header d-flex justify-content-between">
         <div>
@@ -129,10 +149,11 @@
     </div>
   </main>
 
-  <!-- Templates -->
+  <!-- Templates (same as your earlier templates) -->
   <template id="tpl-enroll">
+    <!-- ...same template contents as before... -->
     <div class="card p-3">
-      <div class="d-flex justify-content-between" section="enroll"><h4>Student Enrollment</h4><div class="small-note">Register root student and siblings</div></div>
+      <div class="d-flex justify-content-between"><h4>Student Enrollment</h4><div class="small-note">Register root student and siblings</div></div>
       <hr>
       <form id="form-enroll">
         <div class="row g-2">
@@ -238,7 +259,7 @@
     </div>
   </template>
 
-  <!-- Settings Modal (password-protected) -->
+  <!-- Settings Modal -->
   <div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -272,41 +293,84 @@
       "use strict";
 
       /* --------------------
-         Simple Fee Portal
-         - vanilla JS (beginner friendly)
-         - localStorage for data
-         - admin settings protected by a predefined hashed password
+         Simplified, fixed menu & navigation
       -------------------- */
 
-      // STORAGE KEYS
+      // Storage keys
       const KEY_STUD = 'ks_students_v1';
       const KEY_SLIP = 'ks_slips_v1';
-      const KEY_CUSTOM_PASS = 'ks_admin_pass_v1'; // if admin sets new pass it will be stored here (plain, local)
-
-      // DEFAULT hashed admin password (SHA-256 hex). Replace value if you want another secret.
-      // If someone knows the original password (before hashing), they can authenticate by entering it.
+      const KEY_CUSTOM_PASS = 'ks_admin_pass_v1';
       const DEFAULT_HASHED = 'c94e2ccf0fe3acd76103931930f2932502524d1e60eda32fb0f5b1c58c06d84c';
 
-      // small helpers
+      // helpers
+      function el(id){ return document.getElementById(id); }
       function loadStudents(){ return JSON.parse(localStorage.getItem(KEY_STUD) || '{}'); }
-      function saveStudents(obj){ localStorage.setItem(KEY_STUD, JSON.stringify(obj)); }
+      function saveStudents(v){ localStorage.setItem(KEY_STUD, JSON.stringify(v)); }
       function loadSlips(){ return JSON.parse(localStorage.getItem(KEY_SLIP) || '[]'); }
-      function saveSlips(list){ localStorage.setItem(KEY_SLIP, JSON.stringify(list)); }
+      function saveSlips(v){ localStorage.setItem(KEY_SLIP, JSON.stringify(v)); }
       function getCustomPass(){ return localStorage.getItem(KEY_CUSTOM_PASS) || ''; }
       function setCustomPass(p){ if(p) localStorage.setItem(KEY_CUSTOM_PASS, p); else localStorage.removeItem(KEY_CUSTOM_PASS); }
-
-      // simple DOM helpers
-      function el(id){ return document.getElementById(id); }
       function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-      // sidebar toggle
+      // Improved menu logic:
+      // - Keep menu button in topbar (consistent)
+      // - On desktop: toggle .collapsed on sidebar to hide/show
+      // - On mobile: toggle .show on sidebar to overlay menu
+      const menuBtn = el('menuBtn');
       const sidebar = el('sidebar');
-      el('menuBtn').addEventListener('click', function(){ sidebar.classList.toggle('hidden'); });
+      const MOBILE_BREAK = 992;
 
-      // simple view renderer
-      function showView(name){
-        // remove dynamic cards and ajax-content (keeps home visible as default)
+      function isMobile(){ return window.innerWidth < MOBILE_BREAK; }
+
+      // initialize sidebar state on load/resize
+      function initializeSidebar(){
+        if(isMobile()){
+          sidebar.classList.remove('collapsed');
+          sidebar.classList.remove('show');
+        } else {
+          sidebar.classList.remove('show');
+          // show by default; if previously collapsed keep collapsed
+          // do nothing (collapsed toggles hide)
+        }
+      }
+
+      // toggle behavior
+      menuBtn.addEventListener('click', function(){
+        if(isMobile()){
+          sidebar.classList.toggle('show');
+        } else {
+          sidebar.classList.toggle('collapsed');
+        }
+      });
+
+      // hide on nav click for mobile & update active link
+      document.getElementById('navList').addEventListener('click', function(e){
+        const a = e.target.closest('a');
+        if(!a) return;
+        // handle nav to pages or ajax
+        const page = a.dataset.page;
+        if(page){
+          // SPA navigation handled elsewhere; hide sidebar on mobile after click
+          if(isMobile()) sidebar.classList.remove('show');
+          // visually set active
+          Array.from(document.querySelectorAll('#navList .nav-link')).forEach(n => n.classList.remove('active'));
+          a.classList.add('active');
+        }
+        // ajax links handled in document click below
+      });
+
+      window.addEventListener('resize', initializeSidebar);
+      // initial
+      initializeSidebar();
+
+      /* ======= SPA rendering & modules (kept simple & beginner-friendly) ======= */
+
+      function removeDynamics(){
         document.querySelectorAll('.card.dynamic, .ajax-content').forEach(n => n.remove());
+      }
+
+      function showView(name){
+        removeDynamics();
         el('view-home').style.display = (name === 'home') ? '' : 'none';
         if(name === 'home') return;
         const tpl = document.getElementById('tpl-' + name);
@@ -315,25 +379,30 @@
         card.className = 'card p-3 dynamic';
         card.innerHTML = tpl.innerHTML;
         el('main').appendChild(card);
-        // init the module
+
+        // call module initializer
         if(name === 'enroll') initEnroll();
         if(name === 'fee') initFee();
         if(name === 'siblings') initSiblings();
         if(name === 'slips') initSlips();
-        // hide sidebar on small screens
-        if(window.innerWidth < 992) sidebar.classList.add('hidden');
+
+        // ensure helpful focus
+        el('main').focus();
+        // ensure sidebar hidden on mobile
+        if(isMobile()) sidebar.classList.remove('show');
       }
 
-      // navigation clicks
-      document.getElementById('navList').addEventListener('click', function(e){
-        const a = e.target.closest('a');
-        if(!a) return;
-        e.preventDefault();
-        const page = a.dataset.page;
-        if(page) showView(page);
+      // nav buttons (top quick actions and side)
+      document.addEventListener('click', function(e){
+        const btn = e.target.closest('[data-page]');
+        if(btn){
+          e.preventDefault();
+          const page = btn.dataset.page;
+          showView(page);
+        }
       });
 
-      // AJAX loading for owner/privacy/terms files (kept simple)
+      // sidebar data-ajax fetch (About / Privacy / Terms)
       document.addEventListener('click', function(e){
         const a = e.target.closest('[data-ajax]');
         if(!a) return;
@@ -344,23 +413,24 @@
           return r.text();
         }).then(html => {
           el('view-home').style.display = 'none';
-          document.querySelectorAll('.card.dynamic, .ajax-content').forEach(n => n.remove());
+          removeDynamics();
           const wrap = document.createElement('div');
           wrap.className = 'card p-3 ajax-content';
           wrap.innerHTML = html;
           el('main').appendChild(wrap);
-          if(window.innerWidth < 992) sidebar.classList.add('hidden');
+          // hide sidebar on mobile
+          if(isMobile()) sidebar.classList.remove('show');
         }).catch(err => alert(err.message));
       });
 
-      // README button (loads README.md as plain text)
+      // README button
       el('openReadme').addEventListener('click', function(){
         fetch('README.md').then(r => {
-          if(!r.ok) throw new Error('Cannot load README.md (if using file:// use local server).');
+          if(!r.ok) throw new Error('Cannot load README.md (use local server if file:// blocked)');
           return r.text();
         }).then(text => {
           el('view-home').style.display = 'none';
-          document.querySelectorAll('.card.dynamic, .ajax-content').forEach(n => n.remove());
+          removeDynamics();
           const c = document.createElement('div');
           c.className = 'card p-3 ajax-content';
           c.innerHTML = '<h4>README.md</h4><hr><pre class="md"></pre>';
@@ -369,25 +439,23 @@
         }).catch(err => alert(err.message));
       });
 
-      // LICENSE button (loads LICENSE as plain text)
-        el('openLicense').addEventListener('click', function(){
-            fetch('LICENSE').then(r => {
-            if(!r.ok) throw new Error('Cannot load LICENSE (if using file:// use local server).');
-            return r.text();
-            }).then(text => {
-            el('view-home').style.display = 'none';
-            document.querySelectorAll('.card.dynamic, .ajax-content').forEach(n => n.remove());
-            const c = document.createElement('div');
-            c.className = 'card p-3 ajax-content';
-            c.innerHTML = '<h4>LICENSE</h4><hr><pre class="md"></pre>';
-            c.querySelector('pre').textContent = text;
-            el('main').appendChild(c);
-            }).catch(err => alert(err.message));
-        });
+      // LICENSE button
+      el('openLicense').addEventListener('click', function(){
+        fetch('LICENSE').then(r => {
+          if(!r.ok) throw new Error('Cannot load LICENSE (use local server if file:// blocked)');
+          return r.text();
+        }).then(text => {
+          el('view-home').style.display = 'none';
+          removeDynamics();
+          const c = document.createElement('div');
+          c.className = 'card p-3 ajax-content';
+          c.innerHTML = '<h4>LICENSE</h4><hr><pre class="md"></pre>';
+          c.querySelector('pre').textContent = text;
+          el('main').appendChild(c);
+        }).catch(err => alert(err.message));
+      });
 
-      /* =========================
-         Enrollment module
-      ========================= */
+      /* ================= Enrollment (same as previous working logic) ================= */
       function initEnroll(){
         const form = el('form-enroll');
         const sibContainer = el('enroll-siblings');
@@ -491,7 +559,8 @@
         renderList();
       }
 
-      /* ================= Fee Entry ================= */
+      /* ============ Fee, Siblings, Slips, Settings (same logic as before) ============ */
+
       function initFee(){
         const rootInput = el('fee-root');
         const proceedBtn = el('fee-proceed');
@@ -529,14 +598,11 @@
           form.classList.add('d-none');
           processingEl.classList.remove('d-none');
 
-          // simulate 3-7s official processing delay
           const delay = 3000 + Math.floor(Math.random()*4000);
           setTimeout(function(){
-            // previous balance from last slip
             const slips = loadSlips();
             let prev = 0;
             for(let i=slips.length-1;i>=0;i--){ if(slips[i].rootId === root){ prev = Number(slips[i].balance||0); break; } }
-            // monthly from student + siblings
             const students = loadStudents();
             const rec = students[root];
             let monthly = 0;
@@ -554,7 +620,6 @@
           }, delay);
         });
 
-        // recompute on input
         form.addEventListener('input', compute);
 
         el('fee-reset').addEventListener('click', function(){ form.reset(); form.classList.add('d-none'); });
@@ -586,7 +651,6 @@
         });
       }
 
-      /* =============== Sibling Preferences =============== */
       function initSiblings(){
         const rootInput = el('sp-root');
         const loadBtn = el('sp-load');
@@ -656,7 +720,6 @@
         }
       }
 
-      /* ================= All Slips (view only) ================= */
       function initSlips(){
         const tbody = document.querySelector('#sl-table tbody');
         const search = el('sl-search');
@@ -680,7 +743,6 @@
             tr.querySelector('.view').addEventListener('click', () => {
               const students = loadStudents();
               const stu = students[s.rootId] || { name: '(Unknown)' };
-              // show a simple modal-like card for viewing (no print / export)
               const card = document.createElement('div');
               card.className = 'card p-3 dynamic';
               card.innerHTML = `
@@ -704,19 +766,16 @@
         render();
       }
 
-      /* ================= Settings (password protected) ================= */
-      // helpers for hashing (SHA-256) using SubtleCrypto
+      /* Settings (unchanged behavior) */
       async function sha256Hex(text){
         const enc = new TextEncoder().encode(text);
         const buf = await crypto.subtle.digest('SHA-256', enc);
         return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
       }
 
-      // settings modal behavior
-      const settingsModalEl = document.getElementById('settingsModal');
+      const settingsModalEl = el('settingsModal');
       const settingsModal = new bootstrap.Modal(settingsModalEl);
       el('openSettingsBtn').addEventListener('click', function(){
-        // reset UI
         el('settings-auth').style.display = '';
         el('settings-body').style.display = 'none';
         el('settings-pass').value = '';
@@ -729,7 +788,6 @@
         if(!input){ alert('Enter password'); return; }
         const custom = getCustomPass();
         if(custom){
-          // if admin previously set a local password, validate plain text
           if(input === custom){
             el('settings-auth').style.display = 'none';
             el('settings-body').style.display = '';
@@ -738,7 +796,6 @@
             alert('Invalid password');
           }
         } else {
-          // validate by hashing input and comparing with DEFAULT_HASHED
           const h = await sha256Hex(input);
           if(h === DEFAULT_HASHED){
             el('settings-auth').style.display = 'none';
@@ -753,15 +810,13 @@
       el('settings-save-btn').addEventListener('click', function(){
         const newPass = el('settings-new-pass').value || '';
         if(!newPass){ alert('Enter new password to save'); return; }
-        // store locally (plain) as requested — only accessible on this device/browser
         setCustomPass(newPass);
         alert('New admin password saved locally');
         settingsModal.hide();
       });
 
-      // Request admin hash (opens email client with prefilled message)
+      // Request admin hash (opens email client)
       el('openRequestBtn').addEventListener('click', function(){
-        // show a small prompt form (we will create a simple UI in the modal area)
         const formHtml = `
           <div id="reqForm">
             <div class="mb-2"><label class="form-label">Your Email</label><input id="reqEmail" class="form-control" type="email" placeholder="you@example.com"></div>
@@ -771,21 +826,13 @@
             <div class="mb-2"><label class="form-label">How did you reach?</label><input id="reqHow" class="form-control"></div>
             <div class="d-flex justify-content-end gap-2"><button id="reqSend" class="btn btn-primary">Open Email Client</button><button id="reqCancel" class="btn btn-outline-secondary">Cancel</button></div>
           </div>`;
-        // replace auth section with request form
         el('settings-auth').style.display = 'none';
-        const body = el('settingsModal').querySelector('.modal-body'); // not present by id; use settingsModalEl
-        // Instead manipulate DOM inside this modal directly:
-        const authDiv = el('settings-auth');
-        authDiv.style.display = 'none';
-        // insert request UI after authDiv
         const insertContainer = document.createElement('div');
         insertContainer.id = 'reqContainer';
         insertContainer.innerHTML = formHtml;
         settingsModalEl.querySelector('.modal-body').appendChild(insertContainer);
 
-        // bindings
         document.getElementById('reqCancel').addEventListener('click', function(){
-          // remove request form and restore auth UI
           const c = document.getElementById('reqContainer'); if(c) c.remove();
           el('settings-auth').style.display = '';
         });
@@ -797,7 +844,6 @@
           const purpose = document.getElementById('reqPurpose').value || '';
           const how = document.getElementById('reqHow').value || '';
           if(!email){ alert('Enter your email in the form'); return; }
-          // prepare mailto
           const to = 'akshatpsd2005@gmail.com';
           const subject = encodeURIComponent('Request: Admin Hash for Key Of Success Portal');
           const bodyLines = [
@@ -813,13 +859,11 @@
             'Please respond manually.'
           ];
           const body = encodeURIComponent(bodyLines.join('\\n'));
-          // open mail client
           window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
-          // after opening, we leave it to the user to send the email manually.
         });
       });
 
-      /* expose small API for debugging */
+      // expose API for debugging
       window.KSPortal = { loadStudents, saveStudents, loadSlips, saveSlips, getCustomPass };
 
       // start on home
