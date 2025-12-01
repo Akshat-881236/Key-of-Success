@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Key Of Success — Fee Portal (Admin)</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root { --sidebar-width:250px; --brand:#0d6efd; }
+    html,body { height:100%; margin:0; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background:#f7f9fc;
+      padding-top:56px;
+    }
+    .topbar {
+      position:fixed; top:0; left:0; right:0; height:56px;
+      background:#fff; border-bottom:1px solid #e9ecef; z-index:1100;
+      display:flex; align-items:center; padding:0 12px;
+    }
+    .brand { display:flex; gap:.5rem; align-items:center; color:var(--brand); font-weight:700; }
+
+    .sidebar {
+      position:fixed; top:56px; left:0; bottom:0; width:var(--sidebar-width);
+      background:#fff; border-right:1px solid #e9ecef; padding:12px; overflow:auto;
+      transition: transform .22s ease;
+    }
+    .sidebar.hidden { transform: translateX(-110%); }
+
+    .content { margin-left:var(--sidebar-width); padding:20px; transition: margin-left .22s ease; }
+    .sidebar.hidden ~ .content { margin-left:0; }
+
+    @media (max-width:991px) {
+      .sidebar { transform:translateX(-110%); }
+      .sidebar.show { transform:translateX(0); }
+      .content { margin-left:0; }
+    }
+
+    .menu-btn { width:44px; height:44px; border-radius:8px; border:0; background:transparent; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
+    .portal-header { background:linear-gradient(90deg,#0d6efd12,#19875408); padding:12px; border-radius:8px; margin-bottom:12px; }
+    .small-note { color:#6c757d; font-size:.9rem; }
+    .required { color:#d63384; }
+    pre.md { background:#f8f9fa; padding:12px; border-radius:6px; white-space:pre-wrap; }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <button id="menuBtn" class="menu-btn" title="Toggle menu"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"></path></svg></button>
+
+    <div class="brand ms-2">
+      <svg width="18" height="18" viewBox="0 0 24 24" style="margin-right:6px"><path fill="currentColor" d="M12 2L1 7l11 5 9-4.09V17h2V6L12 2z"></path></svg>
+      <div>
+        <div>KEY OF SUCCESS</div>
+        <small class="small-note">Learning Point — Kherki Daula, Gurugram</small>
+      </div>
+    </div>
+
+    <div class="ms-auto d-flex align-items-center gap-2">
+      <span class="badge bg-info text-dark">For administrative use only — <a href="https://akshat-881236.github.io/Portfolio-881236/localStorage.htm">Local Storage</a></span>
+      <button id="openSettingsBtn" class="btn btn-outline-secondary btn-sm">Settings</button>
+      <button id="openReadme" class="btn btn-outline-secondary btn-sm">README</button>
+      <button id="openLicense" class="btn btn-outline-secondary btn-sm">License</button>
+    </div>
+  </header>
+
+  <nav id="sidebar" class="sidebar" aria-label="Main sidebar">
+    <div style="font-weight:700">Admin Portal</div>
+    <div class="small-note mb-3">Nursery — 8th</div>
+
+    <ul class="nav flex-column" id="navList">
+      <li class="nav-item"><a href="#" class="nav-link" data-page="home">Home</a></li>
+      <li class="nav-item"><a href="#" class="nav-link" data-page="enroll">Student Enrollment</a></li>
+      <li class="nav-item"><a href="#" class="nav-link" data-page="fee">Fee Entry</a></li>
+      <li class="nav-item"><a href="#" class="nav-link" data-page="siblings">Sibling Preferences</a></li>
+      <li class="nav-item"><a href="#" class="nav-link" data-page="slips">All Fee Slips</a></li>
+
+      <li class="nav-item mt-3"><hr /></li>
+
+      <li class="nav-item"><a href=/Key-of-Success/owner.htm" class="nav-link" data-ajax="owner.htm">About Owner</a></li>
+      <li class="nav-item"><a href="/Key-of-Success/privacy_policy.htm" class="nav-link" data-ajax="privacy_policy.htm">Privacy Policy</a></li>
+      <li class="nav-item"><a href="#" class="nav-link" data-ajax="term_condition.htm">Terms & Conditions</a></li>
+    </ul>
+
+    <div class="mt-4 small-note">
+      <div><strong>Address:</strong> Kherki Daula, Gurugram</div>
+      <div><strong>Grades:</strong> Nursery — 8th</div>
+    </div>
+  </nav>
+
+  <main id="main" class="content">
+    <div id="view-home">
+      <div class="portal-header d-flex justify-content-between">
+        <div>
+          <div style="font-size:1.1rem;font-weight:700">Fee Portal — Home</div>
+          <div class="small-note">A simple, local admin portal for fee management</div>
+        </div>
+        <div class="small-note">Single-file SPA · Beginner friendly</div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="card p-3">
+            <h5>Quick Actions</h5>
+            <div class="d-grid gap-2 mt-2">
+              <button class="btn btn-primary" data-page="enroll">Student Enrollment</button>
+              <button class="btn btn-success" data-page="fee">Fee Entry</button>
+              <button class="btn btn-warning" data-page="slips">All Fee Slips</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card p-3">
+            <h5>Notes</h5>
+            <ul>
+              <li>Only authenticated admin can change settings (password protected by hash).</li>
+              <li>If you don't have the hash you must use the request form in Settings — this opens your email client to send a manual request.</li>
+              <li>All data is stored locally (localStorage). Keep backups if needed.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <footer>KEY OF SUCCESS — KHERKI DAULA GURUGRAM · FROM NURSERY TO 8TH</footer>
+    </div>
+  </main>
+
+  <!-- Templates -->
+  <template id="tpl-enroll">
+    <div class="card p-3">
+      <div class="d-flex justify-content-between" section="enroll"><h4>Student Enrollment</h4><div class="small-note">Register root student and siblings</div></div>
+      <hr>
+      <form id="form-enroll">
+        <div class="row g-2">
+          <div class="col-md-3"><label class="form-label">Root Student ID <span class="required">*</span></label><input name="rootId" class="form-control" required placeholder="Unique ID"></div>
+          <div class="col-md-3"><label class="form-label">Student Name <span class="required">*</span></label><input name="name" class="form-control" required></div>
+          <div class="col-md-3"><label class="form-label">Class</label><input name="class" class="form-control"></div>
+          <div class="col-md-3"><label class="form-label">Monthly Fee (₹)</label><input name="fee" type="number" min="0" class="form-control" value="0"></div>
+
+          <div class="col-12 mt-2">
+            <label class="form-label">Siblings</label>
+            <div id="enroll-siblings"></div>
+            <div class="mt-2"><button id="enroll-add-sib" type="button" class="btn btn-sm btn-outline-primary">Add Sibling</button></div>
+          </div>
+
+          <div class="col-12 mt-3">
+            <button class="btn btn-primary">Save</button>
+            <button id="enroll-clear" type="button" class="btn btn-outline-secondary">Clear</button>
+            <button id="enroll-show" type="button" class="btn btn-outline-info">Show Registered</button>
+          </div>
+        </div>
+      </form>
+
+      <hr>
+      <div id="enroll-list"></div>
+    </div>
+  </template>
+
+  <template id="tpl-fee">
+    <div class="card p-3">
+      <div class="d-flex justify-content-between"><h4>Fee Entry</h4><div class="small-note">Simulated official processing (3–7s)</div></div>
+      <hr>
+      <div class="row g-2">
+        <div class="col-md-4">
+          <label class="form-label">Root ID</label>
+          <div class="d-flex gap-2">
+            <input id="fee-root" class="form-control" placeholder="Root ID">
+            <button id="fee-proceed" class="btn btn-primary">Proceed</button>
+          </div>
+        </div>
+
+        <div id="fee-processing" class="col-12 d-none">
+          <div class="p-3 border rounded">Processing official data… please wait</div>
+        </div>
+
+        <form id="form-fee" class="d-none col-12">
+          <div class="row g-2 mt-2">
+            <div class="col-md-3"><label>Previous Balance (₹)</label><input id="fee-prev" readonly class="form-control" value="0"></div>
+            <div class="col-md-3"><label>Monthly Total (₹)</label><input id="fee-monthly" readonly class="form-control" value="0"></div>
+            <div class="col-md-3"><label>Stationary (₹)</label><input id="fee-stationary" type="number" min="0" class="form-control" value="0"></div>
+            <div class="col-md-3"><label>Exam Fee (₹)</label><input id="fee-exam" type="number" min="0" class="form-control" value="0"></div>
+
+            <div class="col-md-3"><label>Fine (₹)</label><input id="fee-fine" type="number" min="0" class="form-control" value="0"></div>
+            <div class="col-md-3"><label>Concession (₹)</label><input id="fee-concession" type="number" min="0" class="form-control" value="0"></div>
+            <div class="col-md-3"><label>Final Payable (₹)</label><input id="fee-final" readonly class="form-control" value="0"></div>
+            <div class="col-md-3"><label>Amount Paid (₹)</label><input id="fee-paid" type="number" min="0" class="form-control" value="0"></div>
+
+            <div class="col-md-3"><label>Balance (₹)</label><input id="fee-balance" readonly class="form-control" value="0"></div>
+            <div class="col-md-3"><label>Payment Date</label><input id="fee-date" type="date" class="form-control" value=""></div>
+
+            <div class="col-12 mt-2">
+              <button id="fee-save" class="btn btn-success">Save Slip</button>
+              <button id="fee-reset" class="btn btn-outline-secondary">Reset</button>
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-siblings">
+    <div class="card p-3">
+      <h4>Sibling Preferences</h4>
+      <hr>
+      <div class="row g-2">
+        <div class="col-md-4"><input id="sp-root" class="form-control" placeholder="Root ID"></div>
+        <div class="col-md-8 d-flex align-items-end gap-2">
+          <button id="sp-load" class="btn btn-primary">Load</button>
+          <button id="sp-add" class="btn btn-success">Add Sibling</button>
+        </div>
+
+        <div id="sp-editor" class="col-12 d-none mt-2">
+          <div id="sp-list" class="list-group"></div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-slips">
+    <div class="card p-3">
+      <div class="d-flex justify-content-between"><h4>All Fee Slips</h4><div class="small-note">Search & view (no export)</div></div>
+      <hr>
+      <div class="row g-2">
+        <div class="col-md-6"><input id="sl-search" class="form-control" placeholder="Search Slip ID or Root ID"></div>
+      </div>
+
+      <div class="table-responsive mt-3">
+        <table class="table table-striped" id="sl-table">
+          <thead><tr><th>Slip ID</th><th>Root ID</th><th>Date</th><th>Final</th><th>Paid</th><th>Balance</th><th>Actions</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </template>
+
+  <!-- Settings Modal (password-protected) -->
+  <div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Settings (Admin)</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body">
+          <div id="settings-auth">
+            <p class="small-note">Enter admin password (hashed) to unlock settings.</p>
+            <div class="mb-2"><input id="settings-pass" type="password" class="form-control" placeholder="Admin password"></div>
+            <div class="d-flex justify-content-end gap-2"><button id="settings-auth-btn" class="btn btn-primary">Authenticate</button></div>
+            <hr>
+            <p class="small-note">If you do not have the hash, request it (opens your email client). You must send the request manually.</p>
+            <button id="openRequestBtn" class="btn btn-outline-secondary w-100">Request Admin Hash</button>
+          </div>
+
+          <div id="settings-body" style="display:none">
+            <div class="mb-2"><label class="form-label">Set new admin password (stored locally)</label><input id="settings-new-pass" class="form-control"></div>
+            <div class="mb-2"><button id="settings-save-btn" class="btn btn-success">Save Password</button></div>
+            <div class="form-text small-note">Changing the password stores it locally. Only someone who knows the current admin password can change it.</div>
+          </div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    (function(){
+      "use strict";
+
+      /* --------------------
+         Simple Fee Portal
+         - vanilla JS (beginner friendly)
+         - localStorage for data
+         - admin settings protected by a predefined hashed password
+      -------------------- */
+
+      // STORAGE KEYS
+      const KEY_STUD = 'ks_students_v1';
+      const KEY_SLIP = 'ks_slips_v1';
+      const KEY_CUSTOM_PASS = 'ks_admin_pass_v1'; // if admin sets new pass it will be stored here (plain, local)
+
+      // DEFAULT hashed admin password (SHA-256 hex). Replace value if you want another secret.
+      // If someone knows the original password (before hashing), they can authenticate by entering it.
+      const DEFAULT_HASHED = 'c94e2ccf0fe3acd76103931930f2932502524d1e60eda32fb0f5b1c58c06d84c';
+
+      // small helpers
+      function loadStudents(){ return JSON.parse(localStorage.getItem(KEY_STUD) || '{}'); }
+      function saveStudents(obj){ localStorage.setItem(KEY_STUD, JSON.stringify(obj)); }
+      function loadSlips(){ return JSON.parse(localStorage.getItem(KEY_SLIP) || '[]'); }
+      function saveSlips(list){ localStorage.setItem(KEY_SLIP, JSON.stringify(list)); }
+      function getCustomPass(){ return localStorage.getItem(KEY_CUSTOM_PASS) || ''; }
+      function setCustomPass(p){ if(p) localStorage.setItem(KEY_CUSTOM_PASS, p); else localStorage.removeItem(KEY_CUSTOM_PASS); }
+
+      // simple DOM helpers
+      function el(id){ return document.getElementById(id); }
+      function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+      // sidebar toggle
+      const sidebar = el('sidebar');
+      el('menuBtn').addEventListener('click', function(){ sidebar.classList.toggle('hidden'); });
+
+      // simple view renderer
+      function showView(name){
+        // remove dynamic cards and ajax-content (keeps home visible as default)
+        document.querySelectorAll('.card.dynamic, .ajax-content').forEach(n => n.remove());
+        el('view-home').style.display = (name === 'home') ? '' : 'none';
+        if(name === 'home') return;
+        const tpl = document.getElementById('tpl-' + name);
+        if(!tpl){ alert('Template missing: ' + name); return; }
+        const card = document.createElement('div');
+        card.className = 'card p-3 dynamic';
+        card.innerHTML = tpl.innerHTML;
+        el('main').appendChild(card);
+        // init the module
+        if(name === 'enroll') initEnroll();
+        if(name === 'fee') initFee();
+        if(name === 'siblings') initSiblings();
+        if(name === 'slips') initSlips();
+        // hide sidebar on small screens
+        if(window.innerWidth < 992) sidebar.classList.add('hidden');
+      }
+
+      // navigation clicks
+      document.getElementById('navList').addEventListener('click', function(e){
+        const a = e.target.closest('a');
+        if(!a) return;
+        e.preventDefault();
+        const page = a.dataset.page;
+        if(page) showView(page);
+      });
+
+      // AJAX loading for owner/privacy/terms files (kept simple)
+      document.addEventListener('click', function(e){
+        const a = e.target.closest('[data-ajax]');
+        if(!a) return;
+        e.preventDefault();
+        const url = a.dataset.ajax;
+        fetch(url).then(r => {
+          if(!r.ok) throw new Error('Failed to load: ' + url);
+          return r.text();
+        }).then(html => {
+          el('view-home').style.display = 'none';
+          document.querySelectorAll('.card.dynamic, .ajax-content').forEach(n => n.remove());
+          const wrap = document.createElement('div');
+          wrap.className = 'card p-3 ajax-content';
+          wrap.innerHTML = html;
+          el('main').appendChild(wrap);
+          if(window.innerWidth < 992) sidebar.classList.add('hidden');
+        }).catch(err => alert(err.message));
+      });
+
+      // README button (loads README.md as plain text)
+      el('openReadme').addEventListener('click', function(){
+        fetch('README.md').then(r => {
+          if(!r.ok) throw new Error('Cannot load README.md (if using file:// use local server).');
+          return r.text();
+        }).then(text => {
+          el('view-home').style.display = 'none';
+          document.querySelectorAll('.card.dynamic, .ajax-content').forEach(n => n.remove());
+          const c = document.createElement('div');
+          c.className = 'card p-3 ajax-content';
+          c.innerHTML = '<h4>README.md</h4><hr><pre class="md"></pre>';
+          c.querySelector('pre').textContent = text;
+          el('main').appendChild(c);
+        }).catch(err => alert(err.message));
+      });
+
+      // LICENSE button (loads LICENSE as plain text)
+        el('openLicense').addEventListener('click', function(){
+            fetch('LICENSE').then(r => {
+            if(!r.ok) throw new Error('Cannot load LICENSE (if using file:// use local server).');
+            return r.text();
+            }).then(text => {
+            el('view-home').style.display = 'none';
+            document.querySelectorAll('.card.dynamic, .ajax-content').forEach(n => n.remove());
+            const c = document.createElement('div');
+            c.className = 'card p-3 ajax-content';
+            c.innerHTML = '<h4>LICENSE</h4><hr><pre class="md"></pre>';
+            c.querySelector('pre').textContent = text;
+            el('main').appendChild(c);
+            }).catch(err => alert(err.message));
+        });
+
+      /* =========================
+         Enrollment module
+      ========================= */
+      function initEnroll(){
+        const form = el('form-enroll');
+        const sibContainer = el('enroll-siblings');
+        const addSibBtn = el('enroll-add-sib');
+        const listWrap = el('enroll-list');
+        const clearBtn = el('enroll-clear');
+        const showBtn = el('enroll-show');
+
+        function createSiblingRow(data){
+          data = data || { id:'', name:'', class:'', fee:0 };
+          const div = document.createElement('div');
+          div.className = 'card mb-2 p-2 sibling-row';
+          div.innerHTML = `
+            <div class="row g-2">
+              <div class="col-md-3"><input name="sib_id" class="form-control" placeholder="Sibling ID" value="${escapeHtml(data.id)}"></div>
+              <div class="col-md-4"><input name="sib_name" class="form-control" placeholder="Sibling Name" value="${escapeHtml(data.name)}"></div>
+              <div class="col-md-3"><input name="sib_class" class="form-control" placeholder="Class" value="${escapeHtml(data.class)}"></div>
+              <div class="col-md-1"><input name="sib_fee" type="number" min="0" class="form-control" placeholder="Fee" value="${Number(data.fee)}"></div>
+              <div class="col-md-1 d-flex align-items-center"><button type="button" class="btn btn-sm btn-danger remove-sib">X</button></div>
+            </div>`;
+          div.querySelector('.remove-sib').addEventListener('click', () => div.remove());
+          return div;
+        }
+
+        addSibBtn.addEventListener('click', function(){ sibContainer.appendChild(createSiblingRow()); });
+
+        form.addEventListener('submit', function(ev){
+          ev.preventDefault();
+          const fd = new FormData(form);
+          const rootId = String(fd.get('rootId')||'').trim();
+          if(!rootId){ alert('Root Student ID required'); return; }
+          const rec = {
+            rootId: rootId,
+            name: String(fd.get('name')||'').trim(),
+            class: String(fd.get('class')||'').trim(),
+            fee: Number(fd.get('fee')||0),
+            siblings: []
+          };
+          sibContainer.querySelectorAll('.sibling-row').forEach(row => {
+            const id = row.querySelector('[name="sib_id"]').value.trim();
+            if(!id) return;
+            rec.siblings.push({
+              id: id,
+              name: row.querySelector('[name="sib_name"]').value.trim(),
+              class: row.querySelector('[name="sib_class"]').value.trim(),
+              fee: Number(row.querySelector('[name="sib_fee"]').value||0)
+            });
+          });
+          const students = loadStudents();
+          students[rootId] = rec;
+          saveStudents(students);
+          alert('Saved');
+          form.reset();
+          sibContainer.innerHTML = '';
+          renderList();
+        });
+
+        clearBtn.addEventListener('click', function(){ form.reset(); sibContainer.innerHTML=''; });
+
+        showBtn.addEventListener('click', renderList);
+
+        function renderList(){
+          listWrap.innerHTML = '';
+          const students = loadStudents();
+          const keys = Object.keys(students);
+          if(!keys.length){ listWrap.innerHTML = '<div class="small-note">No students registered.</div>'; return; }
+          const g = document.createElement('div'); g.className = 'list-group';
+          keys.forEach(k => {
+            const s = students[k];
+            const item = document.createElement('div');
+            item.className = 'list-group-item d-flex justify-content-between align-items-center';
+            item.innerHTML = `
+              <div>
+                <div style="font-weight:700">${escapeHtml(s.name)} <small class="text-muted">[${escapeHtml(k)}]</small></div>
+                <div class="small-note">Class ${escapeHtml(s.class||'')} · ₹${Number(s.fee||0)} · Siblings: ${(s.siblings||[]).length}</div>
+              </div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-secondary edit-root">Edit</button>
+                <button class="btn btn-sm btn-outline-danger del-root">Delete</button>
+              </div>`;
+            item.querySelector('.edit-root').addEventListener('click', function(){
+              // populate form with record
+              form.querySelector('[name="rootId"]').value = s.rootId;
+              form.querySelector('[name="name"]').value = s.name;
+              form.querySelector('[name="class"]').value = s.class;
+              form.querySelector('[name="fee"]').value = s.fee;
+              sibContainer.innerHTML = '';
+              (s.siblings||[]).forEach(x => sibContainer.appendChild(createSiblingRow(x)));
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            item.querySelector('.del-root').addEventListener('click', function(){
+              if(!confirm('Delete root student and siblings?')) return;
+              const studs = loadStudents(); delete studs[k]; saveStudents(studs); renderList();
+            });
+            g.appendChild(item);
+          });
+          listWrap.appendChild(g);
+        }
+
+        // initial render
+        renderList();
+      }
+
+      /* ================= Fee Entry ================= */
+      function initFee(){
+        const rootInput = el('fee-root');
+        const proceedBtn = el('fee-proceed');
+        const processingEl = el('fee-processing');
+        const form = el('form-fee');
+
+        const prevEl = el('fee-prev');
+        const monthlyEl = el('fee-monthly');
+        const stationaryEl = el('fee-stationary');
+        const examEl = el('fee-exam');
+        const fineEl = el('fee-fine');
+        const concessionEl = el('fee-concession');
+        const finalEl = el('fee-final');
+        const paidEl = el('fee-paid');
+        const balanceEl = el('fee-balance');
+        const dateEl = el('fee-date');
+
+        function compute(){
+          const prev = Number(prevEl.value||0);
+          const monthly = Number(monthlyEl.value||0);
+          const s = Number(stationaryEl.value||0);
+          const e = Number(examEl.value||0);
+          const f = Number(fineEl.value||0);
+          const c = Number(concessionEl.value||0);
+          const final = prev + monthly + s + e + f - c;
+          finalEl.value = final.toFixed(2);
+          const paid = Number(paidEl.value||0);
+          balanceEl.value = (final - paid).toFixed(2);
+        }
+
+        proceedBtn.addEventListener('click', function(ev){
+          ev.preventDefault();
+          const root = String(rootInput.value||'').trim();
+          if(!root){ alert('Enter Root ID'); return; }
+          form.classList.add('d-none');
+          processingEl.classList.remove('d-none');
+
+          // simulate 3-7s official processing delay
+          const delay = 3000 + Math.floor(Math.random()*4000);
+          setTimeout(function(){
+            // previous balance from last slip
+            const slips = loadSlips();
+            let prev = 0;
+            for(let i=slips.length-1;i>=0;i--){ if(slips[i].rootId === root){ prev = Number(slips[i].balance||0); break; } }
+            // monthly from student + siblings
+            const students = loadStudents();
+            const rec = students[root];
+            let monthly = 0;
+            if(rec){ monthly += Number(rec.fee||0); (rec.siblings||[]).forEach(sib => monthly += Number(sib.fee||0)); }
+
+            prevEl.value = prev.toFixed(2);
+            monthlyEl.value = monthly.toFixed(2);
+            stationaryEl.value = 0; examEl.value = 0; fineEl.value = 0; concessionEl.value = 0;
+            paidEl.value = 0;
+            dateEl.value = new Date().toISOString().slice(0,10);
+            compute();
+            processingEl.classList.add('d-none');
+            form.classList.remove('d-none');
+            alert('Data loaded — verify and save the slip.');
+          }, delay);
+        });
+
+        // recompute on input
+        form.addEventListener('input', compute);
+
+        el('fee-reset').addEventListener('click', function(){ form.reset(); form.classList.add('d-none'); });
+
+        el('fee-save').addEventListener('click', function(ev){
+          ev.preventDefault();
+          const root = String(rootInput.value||'').trim();
+          if(!root){ alert('Root ID required'); return; }
+          const slips = loadSlips();
+          const slip = {
+            slipId: 'SLIP-' + Date.now(),
+            rootId: root,
+            date: new Date().toISOString(),
+            prevBalance: Number(prevEl.value||0),
+            monthlyTotal: Number(monthlyEl.value||0),
+            stationary: Number(stationaryEl.value||0),
+            exam: Number(examEl.value||0),
+            fine: Number(fineEl.value||0),
+            concession: Number(concessionEl.value||0),
+            finalAmount: Number(finalEl.value||0),
+            paidAmount: Number(paidEl.value||0),
+            balance: Number(balanceEl.value||0)
+          };
+          slips.push(slip);
+          saveSlips(slips);
+          alert('Slip saved');
+          form.reset();
+          form.classList.add('d-none');
+        });
+      }
+
+      /* =============== Sibling Preferences =============== */
+      function initSiblings(){
+        const rootInput = el('sp-root');
+        const loadBtn = el('sp-load');
+        const addBtn = el('sp-add');
+        const editor = el('sp-editor');
+        const list = el('sp-list');
+
+        loadBtn.addEventListener('click', function(){
+          const root = String(rootInput.value||'').trim();
+          if(!root) return alert('Enter root id');
+          const students = loadStudents();
+          const s = students[root];
+          if(!s) return alert('Root id not found');
+          editor.classList.remove('d-none');
+          render(root);
+        });
+
+        addBtn.addEventListener('click', function(){
+          const root = String(rootInput.value||'').trim();
+          if(!root) return alert('Enter root id first');
+          const students = loadStudents();
+          const s = students[root];
+          if(!s) return alert('Root id not found');
+          s.siblings = s.siblings || [];
+          s.siblings.push({ id: root + '-sib' + (s.siblings.length+1), name: 'New Sibling', class:'', fee:0 });
+          students[root] = s; saveStudents(students);
+          render(root);
+        });
+
+        function render(root){
+          list.innerHTML = '';
+          const students = loadStudents();
+          const s = students[root];
+          if(!s || !(s.siblings||[]).length){ list.innerHTML = '<div class="small-note">No siblings</div>'; return; }
+          s.siblings.forEach((sib, idx) => {
+            const item = document.createElement('div');
+            item.className = 'list-group-item d-flex align-items-center gap-2';
+            item.innerHTML = `
+              <div class="flex-grow-1">
+                <div style="font-weight:700">${escapeHtml(sib.name)} <small class="text-muted">[${escapeHtml(sib.id)}]</small></div>
+                <div class="small-note">Class: ${escapeHtml(sib.class)} · Fee: ₹${Number(sib.fee)}</div>
+              </div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-secondary edit-sib">Edit</button>
+                <button class="btn btn-sm btn-outline-danger remove-sib">Remove</button>
+              </div>`;
+            item.querySelector('.remove-sib').addEventListener('click', () => {
+              if(!confirm('Remove sibling?')) return;
+              const studentsNow = loadStudents();
+              studentsNow[root].siblings.splice(idx,1);
+              saveStudents(studentsNow);
+              render(root);
+            });
+            item.querySelector('.edit-sib').addEventListener('click', () => {
+              const name = prompt('Sibling name', sib.name);
+              if(name === null) return;
+              const id = prompt('Sibling ID', sib.id) || sib.id;
+              const cls = prompt('Class', sib.class) || sib.class;
+              const fee = Number(prompt('Fee', sib.fee) || sib.fee);
+              const studentsNow = loadStudents();
+              studentsNow[root].siblings[idx] = { id, name, class: cls, fee };
+              saveStudents(studentsNow);
+              render(root);
+            });
+            list.appendChild(item);
+          });
+        }
+      }
+
+      /* ================= All Slips (view only) ================= */
+      function initSlips(){
+        const tbody = document.querySelector('#sl-table tbody');
+        const search = el('sl-search');
+
+        function render(){
+          tbody.innerHTML = '';
+          const slips = loadSlips().slice().sort((a,b) => new Date(b.date) - new Date(a.date));
+          const q = (search.value||'').toLowerCase();
+          if(!slips.length){ tbody.innerHTML = '<tr><td colspan="7" class="small-note">No slips found</td></tr>'; return; }
+          slips.forEach(s => {
+            if(q && !s.slipId.toLowerCase().includes(q) && !s.rootId.toLowerCase().includes(q)) return;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${escapeHtml(s.slipId)}</td>
+              <td>${escapeHtml(s.rootId)}</td>
+              <td>${new Date(s.date).toLocaleString()}</td>
+              <td>₹${Number(s.finalAmount||0).toFixed(2)}</td>
+              <td>₹${Number(s.paidAmount||0).toFixed(2)}</td>
+              <td>₹${Number(s.balance||0).toFixed(2)}</td>
+              <td><button class="btn btn-sm btn-outline-primary view">View</button></td>`;
+            tr.querySelector('.view').addEventListener('click', () => {
+              const students = loadStudents();
+              const stu = students[s.rootId] || { name: '(Unknown)' };
+              // show a simple modal-like card for viewing (no print / export)
+              const card = document.createElement('div');
+              card.className = 'card p-3 dynamic';
+              card.innerHTML = `
+                <h5>Fee Slip ${escapeHtml(s.slipId)}</h5><hr>
+                <p><strong>Root:</strong> ${escapeHtml(s.rootId)} · <strong>Student:</strong> ${escapeHtml(stu.name)} · <strong>Date:</strong> ${new Date(s.date).toLocaleString()}</p>
+                <table class="table">
+                  <tr><th>Final</th><td>₹${s.finalAmount.toFixed(2)}</td></tr>
+                  <tr><th>Paid</th><td>₹${s.paidAmount.toFixed(2)}</td></tr>
+                  <tr><th>Balance</th><td>₹${s.balance.toFixed(2)}</td></tr>
+                </table>
+                <div class="text-end"><button class="btn btn-sm btn-secondary close-view">Close</button></div>
+              `;
+              el('main').appendChild(card);
+              card.querySelector('.close-view').addEventListener('click', () => card.remove());
+            });
+            tbody.appendChild(tr);
+          });
+        }
+
+        search.addEventListener('input', render);
+        render();
+      }
+
+      /* ================= Settings (password protected) ================= */
+      // helpers for hashing (SHA-256) using SubtleCrypto
+      async function sha256Hex(text){
+        const enc = new TextEncoder().encode(text);
+        const buf = await crypto.subtle.digest('SHA-256', enc);
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+      }
+
+      // settings modal behavior
+      const settingsModalEl = document.getElementById('settingsModal');
+      const settingsModal = new bootstrap.Modal(settingsModalEl);
+      el('openSettingsBtn').addEventListener('click', function(){
+        // reset UI
+        el('settings-auth').style.display = '';
+        el('settings-body').style.display = 'none';
+        el('settings-pass').value = '';
+        el('settings-new-pass').value = '';
+        settingsModal.show();
+      });
+
+      el('settings-auth-btn').addEventListener('click', async function(){
+        const input = el('settings-pass').value || '';
+        if(!input){ alert('Enter password'); return; }
+        const custom = getCustomPass();
+        if(custom){
+          // if admin previously set a local password, validate plain text
+          if(input === custom){
+            el('settings-auth').style.display = 'none';
+            el('settings-body').style.display = '';
+            alert('Authenticated (local password)');
+          } else {
+            alert('Invalid password');
+          }
+        } else {
+          // validate by hashing input and comparing with DEFAULT_HASHED
+          const h = await sha256Hex(input);
+          if(h === DEFAULT_HASHED){
+            el('settings-auth').style.display = 'none';
+            el('settings-body').style.display = '';
+            alert('Authenticated');
+          } else {
+            alert('Invalid password (hash mismatch)');
+          }
+        }
+      });
+
+      el('settings-save-btn').addEventListener('click', function(){
+        const newPass = el('settings-new-pass').value || '';
+        if(!newPass){ alert('Enter new password to save'); return; }
+        // store locally (plain) as requested — only accessible on this device/browser
+        setCustomPass(newPass);
+        alert('New admin password saved locally');
+        settingsModal.hide();
+      });
+
+      // Request admin hash (opens email client with prefilled message)
+      el('openRequestBtn').addEventListener('click', function(){
+        // show a small prompt form (we will create a simple UI in the modal area)
+        const formHtml = `
+          <div id="reqForm">
+            <div class="mb-2"><label class="form-label">Your Email</label><input id="reqEmail" class="form-control" type="email" placeholder="you@example.com"></div>
+            <div class="mb-2"><label class="form-label">Contact No.</label><input id="reqContact" class="form-control" placeholder="+91..."></div>
+            <div class="mb-2"><label class="form-label">Name</label><input id="reqName" class="form-control"></div>
+            <div class="mb-2"><label class="form-label">Purpose</label><input id="reqPurpose" class="form-control"></div>
+            <div class="mb-2"><label class="form-label">How did you reach?</label><input id="reqHow" class="form-control"></div>
+            <div class="d-flex justify-content-end gap-2"><button id="reqSend" class="btn btn-primary">Open Email Client</button><button id="reqCancel" class="btn btn-outline-secondary">Cancel</button></div>
+          </div>`;
+        // replace auth section with request form
+        el('settings-auth').style.display = 'none';
+        const body = el('settingsModal').querySelector('.modal-body'); // not present by id; use settingsModalEl
+        // Instead manipulate DOM inside this modal directly:
+        const authDiv = el('settings-auth');
+        authDiv.style.display = 'none';
+        // insert request UI after authDiv
+        const insertContainer = document.createElement('div');
+        insertContainer.id = 'reqContainer';
+        insertContainer.innerHTML = formHtml;
+        settingsModalEl.querySelector('.modal-body').appendChild(insertContainer);
+
+        // bindings
+        document.getElementById('reqCancel').addEventListener('click', function(){
+          // remove request form and restore auth UI
+          const c = document.getElementById('reqContainer'); if(c) c.remove();
+          el('settings-auth').style.display = '';
+        });
+
+        document.getElementById('reqSend').addEventListener('click', function(){
+          const email = document.getElementById('reqEmail').value || '';
+          const contact = document.getElementById('reqContact').value || '';
+          const name = document.getElementById('reqName').value || '';
+          const purpose = document.getElementById('reqPurpose').value || '';
+          const how = document.getElementById('reqHow').value || '';
+          if(!email){ alert('Enter your email in the form'); return; }
+          // prepare mailto
+          const to = 'akshatpsd2005@gmail.com';
+          const subject = encodeURIComponent('Request: Admin Hash for Key Of Success Portal');
+          const bodyLines = [
+            'Requesting admin hash for Key Of Success Fee Portal.',
+            '',
+            'Requester details:',
+            `Name: ${name}`,
+            `Email: ${email}`,
+            `Contact: ${contact}`,
+            `Purpose: ${purpose}`,
+            `How you reach: ${how}`,
+            '',
+            'Please respond manually.'
+          ];
+          const body = encodeURIComponent(bodyLines.join('\\n'));
+          // open mail client
+          window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+          // after opening, we leave it to the user to send the email manually.
+        });
+      });
+
+      /* expose small API for debugging */
+      window.KSPortal = { loadStudents, saveStudents, loadSlips, saveSlips, getCustomPass };
+
+      // start on home
+      showView('home');
+
+    })();
+  </script>
+</body>
+</html>
