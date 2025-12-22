@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ACADEMIC RECORD MANAGEMENT SYSTEM - DEMO </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="title" content="Academic Record Management System - Demo Project">
+<meta name="description" content="A demo Academic Record Management System for coaching centres and educational institutes. Supports DMC, Rank List, RL List, Leaderboard and Student Result Management.">
+<meta name="keywords" content="Record Management System, Result Portal Demo, DMC System, Student Result Software, Academic Records">
+<meta name="author" content="Designed & Developed by Akshat Prasad">
+<meta name="creator" content="Akshat Prasad">
+<meta name="publisher" content="Demo Educational Software Project">
+<meta name="robots" content="index, follow">
+<meta name="language" content="English">
+<meta name="revisit-after" content="7 days">
+<meta name="distribution" content="global">
+<meta name="rating" content="general">
+<meta name="theme-color" content="#1a237e">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Academic Record Management System (Demo)">
+<meta property="og:description" content="Generic demo project for managing student academic records for any educational institute.">
+<meta property="og:site_name" content="Academic Record Management System">
+<meta property="og:locale" content="en_IN">
+
+<meta name="application-name" content="Academic Record Management System">
+<meta name="designer" content="Akshat Prasad">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="HTML5, CSS3, JavaScript (Vanilla)">
+<meta name="repository" content="github.com/Akshat-881236/Key-of-Success/">
+<meta name="source" content="GitHub Pages">
+<meta name="hosting" content="GitHub Pages">
+<meta name="build" content="static-site">
+<meta name="license" content="MIT">
+<meta name="maintainer" content="Akshat Prasad">
+<meta name="project:type" content="Demo Academic Record Management System">
+<meta name="project:category" content="Web Application">
+<meta name="project:stack" content="HTML, CSS, JavaScript, LocalStorage">
+<meta name="project:role" content="Sole Designer and Developer">
+<meta name="project:purpose" content="Demonstration of frontend system design and logic">
+<meta name="project:audience" content="Educational Institutes, Recruiters, Developers">
+<meta name="portfolio:featured" content="true">
+<meta name="license:type" content="MIT License">
+<meta name="license:usage" content="Free for demo, learning and modification">
+<meta name="license:restriction" content="No real student data included">
+<meta name="license:ownership" content="Original code by Akshat Prasad">
+<meta name="license:liability" content="No warranty; demo project only">
+<meta name="copyright" content="© 2025 Akshat Prasad">
+<meta name="quicklink:student-portal" content="#section-student">
+<meta name="quicklink:admin-portal" content="#section-admin-login">
+<meta name="quicklink:dashboard" content="#section-admin-dashboard">
+<meta name="quicklink:rank-list" content="#panel-rank-list">
+<meta name="quicklink:leaderboard" content="#panel-leaderboard">
+<meta name="quicklink:dmc-search" content="#student-search-form">
+  <style>
+    :root {
+      --primary: #1a237e;
+      --secondary: #ffea00;
+      --accent: #424242;
+      --bg: #fafafa;
+      --border: #bdbdbd;
+      --success: #43a047;
+      --danger: #d32f2f;
+    }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      margin: 0;
+      color: #222;
+    }
+    header {
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2vw;
+      position: relative;
+    }
+    .logo {
+      height: 60px;
+      width: 60px;
+      background: white;
+      border-radius: 50%;
+      object-fit: contain;
+      border: 2px solid var(--secondary);
+      box-shadow: 0 1px 8px #0002;
+    }
+    .header-center {
+      text-align: center;
+      flex: 1 1 auto;
+    }
+    h1 {
+      font-size: 1.3rem;
+      line-height: 1.2;
+      margin: 0;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .datetime {
+      font-size: 1.07rem;
+      margin-top: 0.3em;
+      color: var(--secondary);
+      font-weight: 500;
+    }
+    nav {
+      background: var(--accent);
+      color: white;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 0.5rem 0;
+    }
+    nav button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.13rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    nav button.active, nav button:hover {
+      color: var(--secondary);
+      text-decoration: underline;
+    }
+    main {
+      max-width: 1050px;
+      margin: 1.5rem auto;
+      background: white;
+      border-radius: 9px;
+      box-shadow: 0 2px 12px #0001;
+      padding: 2.2rem 2vw;
+      min-height: 350px;
+    }
+    .section {
+      display: none;
+      animation: fadein 0.3s;
+    }
+    .section.active {
+      display: block;
+    }
+    @keyframes fadein {from{opacity:0} to{opacity:1}}
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      margin-bottom: 1.15rem;
+    }
+    .form-group {
+      flex: 1 1 180px;
+      min-width: 150px;
+    }
+    label {
+      font-weight: 500;
+      margin-bottom: 0.25em;
+      display: block;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.5em 0.6em;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      margin-top: 0.1em;
+      outline: none;
+      box-sizing: border-box;
+    }
+    input[type="date"] {
+      padding-right: 0;
+    }
+    .btn, button[type="submit"] {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.6em 1.2em;
+      border-radius: 5px;
+      font-size: 1.08rem;
+      cursor: pointer;
+      transition: background 0.18s;
+      margin-top: 0.7em;
+    }
+    .btn.secondary {
+      background: var(--accent);
+    }
+    .btn.danger {
+      background: var(--danger);
+    }
+    .btn.success {
+      background: var(--success);
+    }
+    .btn:disabled {
+      background: #aaaaaa;
+      cursor: not-allowed;
+    }
+    .alert {
+      background: var(--danger);
+      color: white;
+      border-radius: 4px;
+      padding: 0.7em 1em;
+      margin: 1em 0;
+      font-weight: 500;
+      box-shadow: 0 2px 10px #d32f2f33;
+    }
+    .success-msg {
+      background: var(--success);
+      color: white;
+    }
+    .table-wrap {
+      overflow-x: auto;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 1.1em 0;
+      font-size: 0.98rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.48em 0.6em;
+      text-align: center;
+    }
+    th {
+      background: #e8eaf6;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background: #f3f4fd;
+    }
+    .dmc-footer {
+      font-size: 1.15em;
+      color: #555;
+      margin-top: 1.1em;
+      border-top: 1px dashed #bbb;
+      padding-top: 0.8em;
+    }
+    .leaderboard-medal {
+      font-size: 1.4em;
+      vertical-align: middle;
+    }
+    .edit-btn, .view-btn, .move-btn {
+      font-size: 1em;
+      cursor: pointer;
+      border: none;
+      background: var(--secondary);
+      color: var(--primary);
+      border-radius: 3px;
+      padding: 0.21em 0.5em;
+      margin-right: 0.3em;
+      margin-bottom: 0.2em;
+    }
+    .edit-btn:hover, .view-btn:hover, .move-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+    .activity-log {
+      max-height: 160px;
+      overflow-y: auto;
+      font-size: 0.95em;
+      background: #f3f4fd;
+      border-radius: 6px;
+      padding: 0.7em 1em;
+      margin: 1em 0;
+    }
+    .edit-special-form input, .edit-special-form select {
+      margin-bottom: 0.3em;
+    }
+    @media (max-width: 950px) {
+      main { padding: 1rem 2vw; }
+      .header-center { font-size: 1.25em; }
+      .logo { height: 50px; width: 50px; }
+      th, td { font-size: 0.9em; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-center">
+    <div style="font-size:1.18em; font-weight:600;">ACADEMIC RECORD MANAGEMENT SYSTEM</div>
+    <div style="font-size:0.98em;">A FREE OPEN SOURCE PLATFORM FOR MANAGING SCORE LOCALLY</div>
+    <div style="font-size:0.98em;">OFFLINE , NOT DATA STORE GLOBALLY</div>
+    <div style="font-size:1.06em; font-weight:500; margin-top:0.15em;">
+      RESULT PORTAL FROM 2024 - ONWARD
+    </div>
+    <div class="datetime" id="dateTime"></div>
+  </div>
+</header>
+
+<nav id="main-nav">
+  <button id="student-tab" class="active" onclick="showSection('student')">Student Portal</button>
+  <button id="admin-tab" onclick="showSection('admin-login')">Admin Portal</button>
+</nav>
+
+<main>
+  <!-- STUDENT INTERFACE -->
+  <section id="section-student" class="section active">
+    <h2 style="margin-top:0;">Student Result Search</h2>
+    <form id="student-search-form" autocomplete="off">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="student-formid">Form ID <span style="color:red">*</span></label>
+          <input type="text" id="student-formid" required>
+        </div>
+        <div class="form-group">
+          <label for="student-year">Academic Year</label>
+          <input type="number" id="student-year" min="2024" max="2099" placeholder="e.g., 2024">
+        </div>
+        <div class="form-group">
+          <label for="student-dmcno">DMC No.</label>
+          <input type="text" id="student-dmcno" placeholder="7 digit DMC No.">
+        </div>
+        <div class="form-group">
+          <label for="student-name">Name <span style="color:red">*</span></label>
+          <input type="text" id="student-name" required>
+        </div>
+      </div>
+      <button type="submit" class="btn">Search DMC</button>
+    </form>
+    <div id="student-search-alert"></div>
+    <div id="student-dmc-view"></div>
+  </section>
+
+  <!-- ADMIN LOGIN -->
+  <section id="section-admin-login" class="section">
+    <h2 style="margin-top:0;">Admin Login</h2>
+    <form id="admin-login-form" autocomplete="off">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="admin-name">Admin Name</label>
+          <input type="text" id="admin-name" required>
+        </div>
+        <div class="form-group">
+          <label for="admin-password">Admin Password</label>
+          <input type="password" id="admin-password" required>
+        </div>
+      </div>
+      <button type="submit" class="btn">Login</button>
+    </form>
+    <div id="admin-login-alert"></div>
+  </section>
+
+  <!-- ADMIN DASHBOARD -->
+  <section id="section-admin-dashboard" class="section">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h2 style="margin:0;">Admin Dashboard</h2>
+      <button class="btn secondary" onclick="adminLogout()">Logout</button>
+    </div>
+    <nav style="background:#e8eaf6;color:#222;gap:0.7em;font-size:1.1em;justify-content:start;margin-top:1em;">
+      <button onclick="showAdminPanel('create-dmc')" class="admin-panel-btn active">Create DMC</button>
+      <button onclick="showAdminPanel('all-dmc')" class="admin-panel-btn">All DMC List</button>
+      <button onclick="showAdminPanel('rl-list')" class="admin-panel-btn">RL List</button>
+      <button onclick="showAdminPanel('rank-list')" class="admin-panel-btn">Rank List</button>
+      <button onclick="showAdminPanel('leaderboard')" class="admin-panel-btn">Leaderboard</button>
+    </nav>
+    <!-- Admin Panels -->
+    <div id="admin-panels">
+      <div id="panel-create-dmc" class="admin-panel active">
+        <h3>Create DMC</h3>
+        <form id="create-dmc-form" autocomplete="off">
+          <div class="form-row">
+            <div class="form-group"><label>Name</label><input type="text" id="dmc-name" required></div>
+            <div class="form-group"><label>Form ID</label><input type="text" id="dmc-formid" required></div>
+            <div class="form-group"><label>Father Name</label><input type="text" id="dmc-father" required></div>
+            <div class="form-group"><label>Mother Name</label><input type="text" id="dmc-mother" required></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Class</label><input type="text" id="dmc-class" required></div>
+            <div class="form-group"><label>D.O.B</label><input type="date" id="dmc-dob"></div>
+            <div class="form-group"><label>Date of Result Declaration</label><input type="date" id="dmc-date"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Number of Subjects</label>
+              <select id="dmc-num-subj" required>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6" selected>6</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Type of Evaluation</label>
+              <select id="dmc-eval-type" required>
+                <option value="simple">Simple</option>
+                <option value="standard">Standard</option>
+              </select>
+            </div>
+          </div>
+          <button type="button" class="btn" onclick="proceedToMarks()">Proceed to Marks</button>
+          <div id="marks-entry-section"></div>
+          <button type="submit" class="btn success" style="display:none;" id="create-dmc-btn">Create DMC</button>
+        </form>
+        <div id="create-dmc-alert"></div>
+      </div>
+      <div id="panel-all-dmc" class="admin-panel">
+        <h3>All DMC List</h3>
+        <div>
+          <label>Sort by: </label>
+          <select id="sort-all-dmc">
+            <option value="dmcno">DMC No.</option>
+            <option value="name">Name</option>
+            <option value="formid">Form ID</option>
+            <option value="percent">Percentage</option>
+            <option value="class">Class</option>
+            <option value="date">Result Date</option>
+            <option value="cgpa">CGPA</option>
+            <option value="rank">Rank</option>
+          </select>
+        </div>
+        <div class="table-wrap" id="all-dmc-list"></div>
+      </div>
+      <div id="panel-rl-list" class="admin-panel">
+        <h3>RL List (Result Later List)</h3>
+        <div class="table-wrap" id="rl-list"></div>
+      </div>
+      <div id="panel-rank-list" class="admin-panel">
+        <h3>Rank List</h3>
+        <div class="table-wrap" id="rank-list"></div>
+      </div>
+      <div id="panel-leaderboard" class="admin-panel">
+        <h3>Leaderboard (70%+ Students)</h3>
+        <div class="table-wrap" id="leaderboard"></div>
+      </div>
+          <div id="student-activity-log-wrap">
+      <h4>Activity Log</h4>
+      <div class="activity-log" id="student-activity-log"></div>
+    </div>
+    </div>
+  </section>
+</main>
+<footer style="text-align: center;">
+  Contact Host by sending an <a href="mailto:akshatpsd2005@gmail.com">Email Request</a> to get Admin Password to get start.
+</footer>
+
+<!-- DMC Template (hidden, for print/preview) -->
+<template id="dmc-template" style="width: 1000px;">
+  <div style="background:white;max-width:800px;margin:0 auto;border:2px solid #1a237e;border-radius:10px;padding:1.1em 2vw;">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-size:1.12em;font-weight:700;text-align:center;flex:1 1 auto;">
+        ACADEMIC RECORD MANAGEMENT SYSTEM<br>
+        <span style="font-size:1.05em;font-weight:600;">Result DMC</span>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.6em;">
+      <div style="font-size:1.05em;"><b>DMC No.:</b> <span data-dmcno></span></div>
+      <div style="font-size:1.05em;"><b>Result Date:</b> <span data-dmcdate></span></div>
+    </div>
+    <table style="margin-top:1em;">
+      <tr>
+        <th>Name</th><td data-name></td>
+        <th>Form ID</th><td data-formid></td>
+      </tr>
+      <tr>
+        <th>Father Name</th><td data-father></td>
+        <th>Mother Name</th><td data-mother></td>
+      </tr>
+      <tr>
+        <th>Class</th><td data-class></td>
+        <th>D.O.B</th><td data-dob></td>
+      </tr>
+    </table>
+    <div style="margin:1em 0 0.4em 0;font-weight:600;font-size:1.05em;">Subject-wise Marks</div>
+    <div data-dmc-table></div>
+    <div data-dmc-summary style="margin:1em 0 0.3em 0;"></div>
+    <div class="dmc-footer">
+      <b>Disclaimer:</b> This result is provisional and subject to correction. For abbreviations: ABST - Absent, UMC - Unfair Means, RL - Result Later, UFM - Unfair Means, NR - Not Reported, NE - Not Eligible, N/M - Not Mentioned.<br>
+      <b>Grade Scale:</b> O (95% Above), A+ (85%-95%), A (75%-85%), B+ (65%-75%), B (55%-65%), C+ (45%-55%), C (33%-45%), F (&lt;33)
+    </div>
+  </div>
+</template>
+
+<!-- RL List Edit Modal -->
+<div id="rl-edit-modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:#111a; align-items:center; justify-content:center;">
+  <div style="background:white; border-radius:10px; max-width:400px; margin:auto; padding:1.2em 1.5em; position:relative;">
+    <div style="font-weight:700;font-size:1.1em;margin-bottom:1em;">Edit Special Case DMC</div>
+    <form id="edit-special-form" class="edit-special-form"></form>
+    <div id="rl-edit-alert"></div>
+    <div style="text-align:right;">
+      <button class="btn secondary" onclick="closeRLEditModal()">Cancel</button>
+      <button class="btn success" id="rl-edit-save-btn" type="button">Save & Move to All DMC</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==== CONFIG & DB ==== */
+const SUBJECT_POOL = [
+  { code: "101", name: "Mathematics" },
+  { code: "102", name: "English" },
+  { code: "103", name: "Hindi" },
+  { code: "104 / 105", name: "GK / Science" },
+  { code: "106 / 107", name: "S.st / Amplitude Test" },
+  { code: "108", name: "Computer" },
+  { code: "PHY", name: "Physics" },
+  { code: "CHE", name: "Chemistry" },
+];
+
+const GRADE_SCALE = [
+  { min: 95, grade: "O", point: 10, remark: "Outstanding" },
+  { min: 85, grade: "A+",  point: 9,  remark: "Excellent" },
+  { min: 75, grade: "A", point: 8,  remark: "Very Good" },
+  { min: 65, grade: "B+",  point: 7,  remark: "Good" },
+  { min: 55, grade: "B",  point: 6,  remark: "Average" },
+  { min: 45, grade: "C+",  point: 5,  remark: "Below Average" },
+  { min: 33,  grade: "C",  point: 4,  remark: "Pass" },
+  { min: 0,  grade: "F",  point: 0,  remark: "Fail" },
+];
+
+// For RL/UMC/ABST etc
+const SPECIAL_CODES = ["ABST", "UMC", "RL", "UFM", "NR", "NE"];
+
+const ADMIN_HASH = "22fce7190306ae9b6d2412f5eb2e6307"; 
+
+// Custom class order for sorting
+const CLASS_ORDER = [
+  "Nursery", "LKG", "UKG",
+  "1st", "2nd", "3rd", "4th", "5th",
+  "6th", "7th", "8th", "9th", "10th",
+  "11th", "12th"
+];
+const CLASS_ORDER_MAP = Object.fromEntries(CLASS_ORDER.map((cls, idx) => [cls.toLowerCase(), idx+1]));
+
+/* ==== HEADER DATE & TIME ==== */
+function updateDateTime() {
+  const dt = new Date();
+  document.getElementById('dateTime').textContent =
+    dt.toLocaleString('en-IN', { dateStyle: 'full', timeStyle: 'medium' });
+}
+setInterval(updateDateTime, 1000); updateDateTime();
+
+/* ==== NAVIGATION ==== */
+function showSection(section) {
+  document.querySelectorAll('nav#main-nav button').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+  if(section === 'student') {
+    document.getElementById('section-student').classList.add('active');
+    document.getElementById('student-tab').classList.add('active');
+  } else if(section === 'admin-login') {
+    document.getElementById('section-admin-login').classList.add('active');
+    document.getElementById('admin-tab').classList.add('active');
+  } else if(section === 'admin-dashboard') {
+    document.getElementById('section-admin-dashboard').classList.add('active');
+    document.getElementById('admin-tab').classList.add('active');
+  }
+}
+
+/* ==== STUDENT INTERFACE ==== */
+function saveStudentActivity(action) {
+  let log = JSON.parse(localStorage.getItem('student_activity_log') || "[]");
+  log.unshift({action, time: new Date().toLocaleString()});
+  if(log.length > 30) log = log.slice(0,30);
+  localStorage.setItem('student_activity_log', JSON.stringify(log));
+  renderStudentActivityLog();
+}
+
+function renderStudentActivityLog() {
+  const log = JSON.parse(localStorage.getItem('student_activity_log') || "[]");
+  if(!log.length) document.getElementById('student-activity-log').innerHTML = "No recent activity.";
+  else document.getElementById('student-activity-log').innerHTML =
+    log.map(l => `<div>🕒 <b>${l.time}</b> - ${l.action}</div>`).join('');
+}
+renderStudentActivityLog();
+
+document.getElementById('student-search-form').onsubmit = function(e) {
+  e.preventDefault();
+  const formid = document.getElementById('student-formid').value.trim();
+  const name = document.getElementById('student-name').value.trim().toUpperCase();
+  const year = document.getElementById('student-year').value.trim();
+  const dmcno = document.getElementById('student-dmcno').value.trim();
+  if(!formid || !name) {
+    showAlert('student-search-alert', 'Please fill Form ID and Name.');
+    return;
+  }
+  if(!year && !dmcno) {
+    showAlert('student-search-alert', 'Fill either Academic Year or DMC No.');
+    return;
+  }
+  // Search logic
+  let found = getAllDMC().filter(d =>
+    d.formid === formid &&
+    d.name.toUpperCase() === name &&
+    ((year && d.academicYear == year) || (dmcno && d.dmcno == dmcno))
+  );
+  saveStudentActivity(
+  `Searched DMC (Form ID: ${formid}, Name: ${name}, Year: ${year || '-'}, DMC No: ${dmcno || '-'})`
+);
+  if(found.length === 0) {
+    document.getElementById('student-dmc-view').innerHTML = "";
+    showAlert('student-search-alert', 'No DMC found for the provided details.', true);
+    return;
+  }
+  // Special codes check
+  const specialSubj = found[0].subjects.find(s => SPECIAL_CODES.includes(s.status));
+  if(specialSubj) {
+    document.getElementById('student-dmc-view').innerHTML = "";
+    showAlert('student-search-alert',
+      `<b>Result Withheld:</b> Your result is not available for the following reason: <b>${specialSubj.status}</b>.<br>
+      <b>Explanation:</b> ${specialCodeExplanation(specialSubj.status)}<br>
+      Please contact the centre for further details.`, true);
+    return;
+  }
+  document.getElementById('student-search-alert').innerHTML = "";
+  renderDMC(found[0], document.getElementById('student-dmc-view'));
+};
+
+function specialCodeExplanation(code) {
+  switch(code) {
+    case "ABST": return "Absent in the Examination.";
+    case "UMC": return "Unfair Means Case. Result withheld.";
+    case "RL": return "Result Later. Due to pending clarification/documentation.";
+    case "UFM": return "Unfair Means. Under investigation.";
+    case "NR": return "Not Reported by Examiner.";
+    case "NE": return "Not Eligible for Result.";
+    default: return "";
+  }
+}
+
+/* ==== ADMIN LOGIN ==== */
+document.getElementById('admin-login-form').onsubmit = function(e) {
+  e.preventDefault();
+  const name = document.getElementById('admin-name').value.trim();
+  const pass = document.getElementById('admin-password').value;
+  if(!name || !pass) {
+    showAlert('admin-login-alert', 'Please fill all fields.');
+    return;
+  }
+  const hash = md5(pass);
+  if(hash !== ADMIN_HASH) {
+    showAlert('admin-login-alert', "Invalid password. Try again.");
+    return;
+  }
+  // successful login
+  sessionStorage.setItem('admin_loggedin', 'yes');
+  sessionStorage.setItem('admin_name', name);
+  document.getElementById('admin-login-alert').innerHTML = "";
+  showSection('admin-dashboard');
+  showAdminPanel('create-dmc');
+};
+
+function adminLogout() {
+  sessionStorage.removeItem('admin_loggedin');
+  showSection('admin-login');
+}
+
+/* ==== ADMIN DASHBOARD NAV ==== */
+function showAdminPanel(panel) {
+  document.querySelectorAll(`.admin-panel`).forEach(p => p.classList.remove('active'));
+  document.querySelectorAll(`.admin-panel-btn`).forEach(btn => btn.classList.remove('active'));
+  document.getElementById(`panel-${panel}`).classList.add('active');
+  document.querySelectorAll(`.admin-panel-btn`).forEach(btn => {
+    if(btn.textContent.replace(/\s/g,"").toLowerCase().includes(panel.replace('-',''))) btn.classList.add('active');
+  });
+  // render panel
+  if(panel === 'all-dmc') renderAllDMCList();
+  if(panel === 'rl-list') renderRLList();
+  if(panel === 'rank-list') renderRankList();
+  if(panel === 'leaderboard') renderLeaderboard();
+}
+
+/* ==== ADMIN: CREATE DMC ==== */
+let dmcMarksData = null;
+function proceedToMarks() {
+  // gather all fields
+  const name = document.getElementById('dmc-name').value.trim();
+  const formid = document.getElementById('dmc-formid').value.trim();
+  const father = document.getElementById('dmc-father').value.trim();
+  const mother = document.getElementById('dmc-mother').value.trim();
+  const clas = document.getElementById('dmc-class').value.trim();
+  const dob = document.getElementById('dmc-dob').value;
+  const date = document.getElementById('dmc-date').value || (new Date()).toISOString().slice(0,10);
+  const numsubj = +document.getElementById('dmc-num-subj').value;
+  const evaltype = document.getElementById('dmc-eval-type').value;
+  if(!name || !formid || !father || !mother || !clas) {
+    showAlert('create-dmc-alert', "Fill all required fields.");
+    return;
+  }
+  const subj = SUBJECT_POOL.slice(0, numsubj);
+  // store for next submit
+  dmcMarksData = { name, formid, father, mother, clas, dob, date, numsubj, evaltype, subj };
+  // Render marks entry UI
+  let html = `<div><b>Enter Marks for Each Subject (${evaltype.toUpperCase()} Evaluation):</b></div><table><tr><th>Subject</th>`;
+  if(evaltype === 'simple') html += "<th>Theory (50)</th><th>Activity (50)</th>";
+  else html += "<th>Theory (50)</th><th>IA (10)</th><th>HT (20)</th><th>Quiz (10)</th><th>Attendance (10)</th>";
+  html += "<th>Status/Remark</th></tr>";
+  subj.forEach((s, i) => {
+    html += `<tr>
+      <td>${s.code} - ${s.name}</td>`;
+    if(evaltype === 'simple') {
+      html += `<td><input type="text" pattern="[0-9]{1,2.5}|50|ABST|UMC|RL|UFM|NR|NE" id="sm-theory-${i}" size="2"></td>
+      <td><input type="text" pattern="[0-9]{1,2.5}|50|ABST|UMC|RL|UFM|NR|NE" id="sm-act-${i}" size="2"></td>`;
+    } else {
+      html += `<td><input type="text" pattern="[0-9]{1,2}|50|ABST|UMC|RL|UFM|NR|NE" id="st-theory-${i}" size="2"></td>
+      <td><input type="text" pattern="[0-9]{1,2}|10|ABST|UMC|RL|UFM|NR|NE" id="st-ia-${i}" size="2"></td>
+      <td><input type="text" pattern="[0-9]{1,2}|20|ABST|UMC|RL|UFM|NR|NE" id="st-ht-${i}" size="2"></td>
+      <td><input type="text" pattern="[0-9]{1,2}|10|ABST|UMC|RL|UFM|NR|NE" id="st-quiz-${i}" size="2"></td>
+      <td><input type="text" pattern="[0-9]{1,2}|10|ABST|UMC|RL|UFM|NR|NE" id="st-att-${i}" size="2"></td>`;
+    }
+    html += `<td><input type="text" id="status-${i}" size="6" placeholder="(optional)"></td></tr>`;
+  });
+  html += "</table>";
+  document.getElementById('marks-entry-section').innerHTML = html;
+  document.getElementById('create-dmc-btn').style.display = '';
+}
+
+document.getElementById('create-dmc-form').onsubmit = function(e) {
+  e.preventDefault();
+  if(!dmcMarksData) return showAlert('create-dmc-alert', "Click Proceed to Marks first.");
+  let subjects = [];
+  let isRL = false;
+  for(let i=0; i<dmcMarksData.numsubj; ++i) {
+    let status = document.getElementById(`status-${i}`)?.value.trim().toUpperCase() || "";
+    if(status && SPECIAL_CODES.includes(status)) {
+      isRL = true;
+      subjects.push({ ...dmcMarksData.subj[i], status });
+      continue;
+    }
+    if(dmcMarksData.evaltype === 'simple') {
+      let th  = document.getElementById(`sm-theory-${i}`).value.trim().toUpperCase();
+      let act = document.getElementById(`sm-act-${i}`).value.trim().toUpperCase();
+      if(!isValidMark(th, 50) || !isValidMark(act, 50)) {
+        showAlert('create-dmc-alert', 'Invalid marks or code in subject '+dmcMarksData.subj[i].name);
+        return;
+      }
+      let thn = isNaN(+th)?th:+th, actn = isNaN(+act)?act:+act;
+      subjects.push({ ...dmcMarksData.subj[i], marks: {th:thn, act:actn}, status: status || "" });
+    } else {
+      let th = document.getElementById(`st-theory-${i}`).value.trim().toUpperCase();
+      let ia = document.getElementById(`st-ia-${i}`).value.trim().toUpperCase();
+      let ht = document.getElementById(`st-ht-${i}`).value.trim().toUpperCase();
+      let quiz = document.getElementById(`st-quiz-${i}`).value.trim().toUpperCase();
+      let att = document.getElementById(`st-att-${i}`).value.trim().toUpperCase();
+      if(!isValidMark(th, 50) || !isValidMark(ia, 10) || !isValidMark(ht, 20) || !isValidMark(quiz, 10) || !isValidMark(att, 10)) {
+        showAlert('create-dmc-alert', 'Invalid marks or code in subject '+dmcMarksData.subj[i].name);
+        return;
+      }
+      let thn = isNaN(+th)?th:+th, ian = isNaN(+ia)?ia:+ia, htn = isNaN(+ht)?ht:+ht, quizn = isNaN(+quiz)?quiz:+quiz, attn = isNaN(+att)?att:+att;
+      subjects.push({ ...dmcMarksData.subj[i], marks: {th:thn, ia:ian, ht:htn, quiz:quizn, att:attn}, status: status || "" });
+    }
+  }
+  // DMC Number
+  const dmcno = generateDMCNo();
+  const academicYear = dmcMarksData.date.slice(0,4);
+  const dmc = {
+    name: dmcMarksData.name,
+    formid: dmcMarksData.formid,
+    father: dmcMarksData.father,
+    mother: dmcMarksData.mother,
+    clas: dmcMarksData.clas,
+    dob: dmcMarksData.dob || "N/M",
+    date: dmcMarksData.date,
+    dmcno,
+    academicYear,
+    evaltype: dmcMarksData.evaltype,
+    subjects,
+  };
+  if(isRL) {
+    saveRL(dmc);
+    showAlert('create-dmc-alert', "DMC added to RL List (Result Later) due to special code.", true);
+  } else {
+    saveDMC(dmc);
+    showAlert('create-dmc-alert', `DMC Created with No. <b>${dmcno}</b>`, true, true);
+  }
+  document.getElementById('marks-entry-section').innerHTML = "";
+  document.getElementById('create-dmc-btn').style.display = 'none';
+  dmcMarksData = null;
+  this.reset();
+};
+
+/* ==== DMC STORAGE & UTILS ==== */
+function getAllDMC() {
+  return JSON.parse(localStorage.getItem('all_dmc')||"[]");
+}
+function saveDMC(dmc) {
+  let all = getAllDMC();
+  all.push(dmc);
+  localStorage.setItem('all_dmc', JSON.stringify(all));
+}
+function generateDMCNo() {
+  let all = getAllDMC();
+  let max = all.reduce((m, d) => Math.max(m, +(d.dmcno||0)), 0);
+  let rnd = Math.floor(Math.random()*9000+1000);
+  return String(Math.max(1000000, max+1+rnd % 8888)).padStart(7,'0');
+}
+function isValidMark(val, max) {
+  if(SPECIAL_CODES.includes(val)) return true;
+  if(val==="" || isNaN(+val)) return false;
+  let n = +val;
+  return n>=0 && n<=max;
+}
+function saveRL(dmc) {
+  let rl = getRLList();
+  rl.push(dmc);
+  localStorage.setItem('rl_list', JSON.stringify(rl));
+}
+function getRLList() {
+  return JSON.parse(localStorage.getItem('rl_list')||"[]");
+}
+function moveRLToDMC(idx, dmcObj) {
+  let rl = getRLList();
+  let dmc;
+  if (dmcObj) {
+    dmc = dmcObj;
+    rl.splice(idx,1);
+  } else {
+    dmc = rl.splice(idx,1)[0];
+  }
+  localStorage.setItem('rl_list', JSON.stringify(rl));
+  saveDMC(dmc);
+}
+
+/* ==== SORTING ==== */
+function classSortIndex(cls) {
+  let c = (cls||"").toString().trim().toLowerCase();
+  if (CLASS_ORDER_MAP[c]) return CLASS_ORDER_MAP[c];
+  // Try "13th", "14th", etc.
+  let match = c.match(/^(\d+)(st|nd|rd|th)$/);
+  if (match) return 20 + (+match[1]);
+  return 1000; // Unknowns sorted at end
+}
+function getDMCPercent(dmc) {
+  let total=0, outof=0;
+  dmc.subjects.forEach(s=>{
+    if(s.status && SPECIAL_CODES.includes(s.status)) return;
+    if(dmc.evaltype==='simple') {
+      total += (+s.marks.th)+(+s.marks.act);
+      outof += 100;
+    } else {
+      total += (+s.marks.th)+(+s.marks.ia)+(+s.marks.ht)+(+s.marks.quiz)+(+s.marks.att);
+      outof += 100;
+    }
+  });
+  return outof?total/outof*100:0;
+}
+function sortByDMCNo(a, b) { return (+a.dmcno || 0) - (+b.dmcno || 0); }
+function sortByName(a, b) { return a.name.localeCompare(b.name); }
+function sortByFormID(a, b) { return a.formid.localeCompare(b.formid); }
+function sortByPercent(a, b) { return getDMCPercent(b) - getDMCPercent(a); }
+function sortByClass(a, b) { let cA = classSortIndex(a.clas), cB = classSortIndex(b.clas); if (cA !== cB) return cA - cB; return sortByDMCNo(a, b);}
+function sortByDate(a, b) { return (b.date || "").localeCompare(a.date || ""); }
+function sortByCGPA(a, b) { return (getDMCPercent(b)/10) - (getDMCPercent(a)/10); }
+function sortByRank(a, b) { return sortByPercent(a, b); }
+function sortDMCList(allDmcList, sortby) {
+  let arr = allDmcList.slice();
+  switch(sortby) {
+    case 'dmcno': arr.sort(sortByDMCNo); break;
+    case 'name': arr.sort(sortByName); break;
+    case 'formid': arr.sort(sortByFormID); break;
+    case 'percent': arr.sort(sortByPercent); break;
+    case 'class': arr.sort(sortByClass); break;
+    case 'date': arr.sort(sortByDate); break;
+    case 'cgpa': arr.sort(sortByCGPA); break;
+    case 'rank': arr.sort(sortByRank); break;
+    default: break;
+  }
+  return arr;
+}
+
+/* ==== ALL DMC LIST ==== */
+function renderAllDMCList() {
+  let all = getAllDMC();
+  let sortby = document.getElementById('sort-all-dmc').value;
+  let sorted = sortDMCList(all, sortby);
+  let html = `<table><tr>
+    <th>DMC No.</th><th>Name</th><th>Form ID</th><th>Class</th><th>Date</th>
+    <th>Percentage</th><th>CGPA</th><th>Rank</th><th>Action</th></tr>`;
+  sorted.forEach((dmc, idx) => {
+    html += `<tr>
+      <td>${dmc.dmcno}</td>
+      <td>${dmc.name}</td>
+      <td>${dmc.formid}</td>
+      <td>${dmc.clas}</td>
+      <td>${dmc.date}</td>
+      <td>${getDMCPercent(dmc).toFixed(2)}%</td>
+      <td>${(getDMCPercent(dmc)/10).toFixed(2)}</td>
+      <td>${idx+1}</td>
+      <td>
+        <button class="view-btn" onclick="viewDMCByDMCNo('${dmc.dmcno}')">View</button>
+      </td>
+    </tr>`;
+  });
+  html += "</table>";
+  document.getElementById('all-dmc-list').innerHTML = html;
+}
+
+/* ==== RL LIST (with edit and move) ==== */
+function renderRLList() {
+  let rl = getRLList();
+  let html = `<table><tr>
+    <th>DMC No.</th><th>Name</th><th>Form ID</th><th>Class</th><th>Reason</th><th>Action</th></tr>`;
+  rl.forEach((d,i) => {
+    let reason = (d.subjects.find(s => SPECIAL_CODES.includes(s.status))||{}).status || '';
+    html += `<tr>
+      <td>${d.dmcno||'-'}</td>
+      <td>${d.name}</td>
+      <td>${d.formid}</td>
+      <td>${d.clas}</td>
+      <td>${reason||'-'}</td>
+      <td>
+        <button class="edit-btn" onclick="openRLEditModal(${i})">Edit</button>
+        <button class="move-btn" onclick="moveRLToDMC(${i});renderRLList();renderAllDMCList();">Move to All DMC</button>
+      </td>
+    </tr>`;
+  });
+  html += "</table>";
+  document.getElementById('rl-list').innerHTML = html;
+}
+
+/* ==== RL EDIT MODAL ==== */
+let currentRLEditIdx = null;
+function openRLEditModal(idx) {
+  currentRLEditIdx = idx;
+  let rl = getRLList();
+  let dmc = rl[idx];
+  let html = `<div><b>Name:</b> ${dmc.name}</div>
+    <div><b>Form ID:</b> ${dmc.formid}</div>
+    <div><b>Class:</b> ${dmc.clas}</div>
+    <div><b>DMC No.:</b> ${dmc.dmcno}</div>
+    <hr style="margin:0.6em 0;">
+    <div><b>Edit Subject Marks/Status:</b></div>`;
+  dmc.subjects.forEach((s, i) => {
+    html += `<div style="margin-bottom:0.7em;"><b>${s.code} - ${s.name}:</b><br>`;
+    if(dmc.evaltype === 'simple') {
+      html += `Theory (50): <input type="text" id="edit-sm-th-${i}" value="${(s.marks && s.marks.th) || ''}" size="2" style="width:4em;"> `;
+      html += `Activity (50): <input type="text" id="edit-sm-ac-${i}" value="${(s.marks && s.marks.act) || ''}" size="2" style="width:4em;"> `;
+    } else {
+      html += `Theory (50): <input type="text" id="edit-st-th-${i}" value="${(s.marks && s.marks.th) || ''}" size="2" style="width:4em;"> `;
+      html += `IA (10): <input type="text" id="edit-st-ia-${i}" value="${(s.marks && s.marks.ia) || ''}" size="2" style="width:4em;"> `;
+      html += `HT (20): <input type="text" id="edit-st-ht-${i}" value="${(s.marks && s.marks.ht) || ''}" size="2" style="width:4em;"> `;
+      html += `Quiz (10): <input type="text" id="edit-st-quiz-${i}" value="${(s.marks && s.marks.quiz) || ''}" size="2" style="width:4em;"> `;
+      html += `Attendance (10): <input type="text" id="edit-st-att-${i}" value="${(s.marks && s.marks.att) || ''}" size="2" style="width:4em;"> `;
+    }
+    html += `Status: <input type="text" id="edit-status-${i}" value="${s.status || ''}" size="6" style="width:5em;"></div>`;
+  });
+  document.getElementById('edit-special-form').innerHTML = html;
+  document.getElementById('rl-edit-modal').style.display = 'flex';
+}
+function closeRLEditModal() {
+  document.getElementById('rl-edit-modal').style.display = 'none';
+  document.getElementById('rl-edit-alert').innerHTML = '';
+  currentRLEditIdx = null;
+}
+document.getElementById('rl-edit-save-btn').onclick = function() {
+  let rl = getRLList();
+  let dmc = JSON.parse(JSON.stringify(rl[currentRLEditIdx]));
+  let isRL = false;
+  for(let i=0; i<dmc.subjects.length; i++) {
+    let status = document.getElementById(`edit-status-${i}`).value.trim().toUpperCase();
+    if(status && SPECIAL_CODES.includes(status)) {
+      isRL = true;
+      dmc.subjects[i].status = status;
+      dmc.subjects[i].marks = {};
+      continue;
+    } else {
+      dmc.subjects[i].status = "";
+    }
+    if(dmc.evaltype === 'simple') {
+      let th = document.getElementById(`edit-sm-th-${i}`).value.trim();
+      let ac = document.getElementById(`edit-sm-ac-${i}`).value.trim();
+      if(!isValidMark(th, 50) || !isValidMark(ac, 50)) {
+        showAlert('rl-edit-alert', "Invalid marks at subject " + dmc.subjects[i].name);
+        return;
+      }
+      dmc.subjects[i].marks = {th: th, act: ac};
+    } else {
+      let th = document.getElementById(`edit-st-th-${i}`).value.trim();
+      let ia = document.getElementById(`edit-st-ia-${i}`).value.trim();
+      let ht = document.getElementById(`edit-st-ht-${i}`).value.trim();
+      let quiz = document.getElementById(`edit-st-quiz-${i}`).value.trim();
+      let att = document.getElementById(`edit-st-att-${i}`).value.trim();
+      if(!isValidMark(th, 50) || !isValidMark(ia, 10) || !isValidMark(ht, 20) || !isValidMark(quiz, 10) || !isValidMark(att, 10)) {
+        showAlert('rl-edit-alert', "Invalid marks at subject " + dmc.subjects[i].name);
+        return;
+      }
+      dmc.subjects[i].marks = {th: th, ia: ia, ht: ht, quiz: quiz, att: att};
+    }
+  }
+  if(isRL) {
+    // Update RL
+    let rlArr = getRLList();
+    rlArr[currentRLEditIdx] = dmc;
+    localStorage.setItem('rl_list', JSON.stringify(rlArr));
+    showAlert('rl-edit-alert', "Still a Special case. Not moved.", true);
+    renderRLList();
+  } else {
+    moveRLToDMC(currentRLEditIdx, dmc);
+    showAlert('rl-edit-alert', "DMC moved to All DMC List.", false, true);
+    closeRLEditModal();
+    renderRLList();
+    renderAllDMCList();
+  }
+};
+
+/* ==== RANK LIST ==== */
+function renderRankList() {
+  let all = getAllDMC().slice();
+  all.sort((a,b)=>getDMCPercent(b)-getDMCPercent(a));
+  let html = `<table><tr>
+    <th>Rank</th><th>Name</th><th>Form ID</th><th>DMC NO.</th><th>Class</th><th>Percentage</th><th>CGPA</th></tr>`;
+  all.forEach((d,i) => {
+    html += `<tr>
+      <td>${i<3?['🥇','🥈','🥉'][i]:i+1}</td>
+      <td>${d.name}</td>
+      <td>${d.formid}</td>
+      <td>${d.dmcno}</td>
+      <td>${d.clas}</td>
+      <td>${getDMCPercent(d).toFixed(2)}%</td>
+      <td>${(getDMCPercent(d)/10).toFixed(2)}</td>
+    </tr>`;
+  });
+  html += "</table>";
+  document.getElementById('rank-list').innerHTML = html;
+}
+
+/* ==== LEADERBOARD ==== */
+function renderLeaderboard() {
+  let all = getAllDMC().filter(d=>getDMCPercent(d)>=70);
+  all.sort((a,b)=>getDMCPercent(b)-getDMCPercent(a));
+  let html = `<table><tr>
+    <th>Rank</th><th>Name</th><th>Form ID</th><th>DMC NO.</th><th>Class</th><th>Percentage</th><th>Medal</th></tr>`;
+  all.forEach((d,i) => {
+    let medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+    html += `<tr>
+      <td>${i+1}</td>
+      <td>${d.name}</td>
+      <td>${d.formid}</td>
+      <td>${d.dmcno}</td>
+      <td>${d.clas}</td>
+      <td>${getDMCPercent(d).toFixed(2)}%</td>
+      <td class="leaderboard-medal">${medal}</td>
+    </tr>`;
+  });
+  html += "</table>";
+  document.getElementById('leaderboard').innerHTML = html;
+}
+
+/* ==== DMC RENDER ==== */
+function renderDMC(dmc, container) {
+  let t = document.getElementById('dmc-template').content.cloneNode(true);
+  t.querySelector('[data-dmcno]').textContent = dmc.dmcno;
+  t.querySelector('[data-dmcdate]').textContent = dmc.date;
+  t.querySelector('[data-name]').textContent = dmc.name;
+  t.querySelector('[data-formid]').textContent = dmc.formid;
+  t.querySelector('[data-father]').textContent = dmc.father;
+  t.querySelector('[data-mother]').textContent = dmc.mother;
+  t.querySelector('[data-class]').textContent = dmc.clas;
+  t.querySelector('[data-dob]').textContent = dmc.dob || "N/M";
+  // Subject Table
+  let subTable = `<table><tr><th>Code</th><th>Name</th>`;
+if (dmc.evaltype === 'simple') {
+  subTable += `<th>Theory (50)</th><th>Activity (50)</th>`;
+} else {
+  subTable += `<th>Theory (50)</th><th>IA (10)</th><th>HT (20)</th><th>Quiz (10)</th><th>Attendance (10)</th>`;
+}
+subTable += `<th>Total</th><th>Grade</th><th>Point</th><th>Remarks</th></tr>`;
+
+let total = 0, outof = 0, sumPoints = 0, passed = true;
+
+dmc.subjects.forEach(s => {
+  let row = `<tr><td>${s.code}</td><td>${s.name}</td>`;
+  let tot = 0, max = 0, gr = "", pt = 0, rk = "";
+
+  if (s.status && SPECIAL_CODES.includes(s.status)) {
+    let expl = specialCodeExplanation(s.status);
+    let status = `<span style="color:red;font-weight:bold;">${s.status}</span>`;
+
+    if (dmc.evaltype === 'simple')
+      row += `<td colspan="2">${status}</td>`;
+    else
+      row += `<td colspan="5">${status}</td>`;
+
+    row += `<td colspan="4">${expl}</td></tr>`;
+  }
+  else if (dmc.evaltype === 'simple') {
+    let th = s.marks.th, act = s.marks.act;
+    let thpass = th >= 20, actpass = act >= 20;
+
+    tot = (+th) + (+act);
+    max = 100;
+
+    let gradeObj = GRADE_SCALE.find(g => tot >= g.min);
+    gr = gradeObj.grade;
+    pt = gradeObj.point;
+    rk = gradeObj.remark;
+
+    if (!(thpass && actpass)) {
+      gr = "F"; pt = 0; rk = "Fail"; passed = false;
+    }
+
+    row += `<td>${th}</td><td>${act}</td><td>${tot}</td><td>${gr}</td><td>${pt}</td><td>${rk}</td></tr>`;
+    total += tot; outof += max; sumPoints += pt;
+  }
+  else {
+    let th = s.marks.th, ia = s.marks.ia, ht = s.marks.ht, quiz = s.marks.quiz, att = s.marks.att;
+    let thpass = th >= 20, htpass = ht >= 8, attpass = att >= 4, iapass = ia >= 4, quizpass = quiz >= 4;
+
+    tot = (+th) + (+ia) + (+ht) + (+quiz) + (+att);
+    max = 100;
+
+    let gradeObj = GRADE_SCALE.find(g => tot >= g.min);
+    gr = gradeObj.grade;
+    pt = gradeObj.point;
+    rk = gradeObj.remark;
+
+    if (!(thpass && htpass && attpass && iapass && quizpass)) {
+      gr = "F"; pt = 0; rk = "Fail"; passed = false;
+    }
+
+    row += `<td>${th}</td><td>${ia}</td><td>${ht}</td><td>${quiz}</td><td>${att}</td>
+            <td>${tot}</td><td>${gr}</td><td>${pt}</td><td>${rk}</td></tr>`;
+    total += tot; outof += max; sumPoints += pt;
+  }
+
+  subTable += row;
+});
+
+subTable += `</table>`;
+t.querySelector('[data-dmc-table]').innerHTML = subTable;
+
+// Summary
+let percent = outof ? (total / outof * 100) : 0;
+let cgpa = percent / 10;
+let grad = GRADE_SCALE.find(g => percent >= g.min);
+
+let summary = `<div><b>Grand Total:</b> ${total} out of ${outof},
+<b>Percentage:</b> ${percent.toFixed(2)}%,
+<b>CGPA:</b> ${cgpa.toFixed(2)},
+<b>Grade:</b> ${grad.grade},
+<b>Point:</b> ${grad.point},
+<b>Remarks:</b> ${passed ? grad.remark : 'Fail'}</div>`;
+
+t.querySelector('[data-dmc-summary]').innerHTML = summary;
+container.innerHTML = "";
+container.appendChild(t);
+}
+
+function viewDMCByDMCNo(dmcno) {
+  const all = getAllDMC();
+  const dmc = all.find(d => d.dmcno == dmcno);
+  if (dmc) {
+    renderDMC(dmc, document.getElementById('all-dmc-list'));
+  } else {
+    alert("DMC not found!");
+  }
+}
+
+function showAlert(id, msg, danger = true, success = false) {
+  document.getElementById(id).innerHTML =
+    `<div class="alert${success ? " success-msg" : ""}">${msg}</div>`;
+  setTimeout(() => {
+    document.getElementById(id).innerHTML = "";
+  }, 7000);
+}
+
+/* ==== MD5 (Tiny) ==== */
+function md5(s){function L(k,d){return(k<<d)|(k>>>(32-d))}
+function K(G,k){var I,J,H,F,E;H=(G&2147483648);F=(k&2147483648);
+I=(G&1073741824);J=(k&1073741824);E=(G&1073741823)+(k&1073741823);
+if(I&J){return(E^2147483648^H^F)}if(I|J){if(E&1073741824){return(E^3221225472^H^F)}else{return(E^1073741824^H^F)}}else{return(E^H^F)}}
+function r(d,g,e){return(d&g)|((~d)&e)}
+function q(d,g,e){return(d&e)|(g&(~e))}
+function p(d,g,e){return d^g^e}
+function n(d,g,e){return g^(d|(~e))}
+function u(F,z,y,x,w,v,u){F=K(F,K(K(r(z,y,x),w),u));return K(L(F,v),z)}
+function f(F,z,y,x,w,v,u){F=K(F,K(K(q(z,y,x),w),u));return K(L(F,v),z)}
+function D(F,z,y,x,w,v,u){F=K(F,K(K(p(z,y,x),w),u));return K(L(F,v),z)}
+function t(F,z,y,x,w,v,u){F=K(F,K(K(n(z,y,x),w),u));return K(L(F,v),z)}
+function e(G){var z;var F=G.length;var x=F+8;var y=(x-(x%64))/64;var H=(y+1)*16;var I=Array(H-1);var d=0;var k=0;
+while(k<F){z=(k-(k%4))/4;d=(k%4)*8;I[z]=(I[z]|(G.charCodeAt(k)<<d));k++}
+z=(k-(k%4))/4;d=(k%4)*8;I[z]=I[z]|(128<<d);I[H-2]=F<<3;I[H-1]=F>>>29;return I}
+function B(x){var k="",F="",G,H;for(G=0;G<=3;G++){H=(x>>>(G*8))&255;F="0"+H.toString(16);k+=F.substr(F.length-2,2)}return k}
+function J(k){k=k.replace(/\r\n/g,"\n");var d="";for(var F=0;F<k.length;F++){var x=k.charCodeAt(F);
+if(x<128){d+=String.fromCharCode(x)}else{if((x>127)&&(x<2048)){d+=String.fromCharCode((x>>6)|192);d+=String.fromCharCode((x&63)|128)}
+else{d+=String.fromCharCode((x>>12)|224);d+=String.fromCharCode(((x>>6)&63)|128);d+=String.fromCharCode((x&63)|128)}}}return d}
+var C=Array();var P,O,m,N,M,l,k,h,g;var G=7,F=12,E=17,Dd=22,Cc=5,Bb=9,Aa=14,Z=20,Y=4,X=11,W=16,V=23,U=6,T=10,S=15,R=21;
+s=J(s);C=e(s);O=1732584193;m=4023233417;N=2562383102;M=271733878;for(l=0;l<C.length;l+=16){k=O;h=m;g=N;P=M;
+O=u(O,m,N,M,C[l+0],G,3614090360);M=u(M,O,m,N,C[l+1],F,3905402710);N=u(N,M,O,m,C[l+2],E,606105819);m=u(m,N,M,O,C[l+3],Dd,3250441966);
+O=u(O,m,N,M,C[l+4],G,4118548399);M=u(M,O,m,N,C[l+5],F,1200080426);N=u(N,M,O,m,C[l+6],E,2821735955);m=u(m,N,M,O,C[l+7],Dd,4249261313);
+O=u(O,m,N,M,C[l+8],G,1770035416);M=u(M,O,m,N,C[l+9],F,2336552879);N=u(N,M,O,m,C[l+10],E,4294925233);m=u(m,N,M,O,C[l+11],Dd,2304563134);
+O=u(O,m,N,M,C[l+12],G,1804603682);M=u(M,O,m,N,C[l+13],F,4254626195);N=u(N,M,O,m,C[l+14],E,2792965006);m=u(m,N,M,O,C[l+15],Dd,1236535329);
+O=f(O,m,N,M,C[l+1],Cc,4129170786);M=f(M,O,m,N,C[l+6],Bb,3225465664);N=f(N,M,O,m,C[l+11],Aa,643717713);m=f(m,N,M,O,C[l+0],Z,3921069994);
+O=f(O,m,N,M,C[l+5],Cc,3593408605);M=f(M,O,m,N,C[l+10],Bb,38016083);N=f(N,M,O,m,C[l+15],Aa,3634488961);m=f(m,N,M,O,C[l+4],Z,3889429448);
+O=f(O,m,N,M,C[l+9],Cc,568446438);M=f(M,O,m,N,C[l+14],Bb,3275163606);N=f(N,M,O,m,C[l+3],Aa,4107603335);m=f(m,N,M,O,C[l+8],Z,1163531501);
+O=f(O,m,N,M,C[l+13],Cc,2850285829);M=f(M,O,m,N,C[l+2],Bb,4243563512);N=f(N,M,O,m,C[l+7],Aa,1735328473);m=f(m,N,M,O,C[l+12],Z,2368359562);
+O=D(O,m,N,M,C[l+5],Y,4294588738);M=D(M,O,m,N,C[l+8],X,2272392833);N=D(N,M,O,m,C[l+11],W,1839030562);m=D(m,N,M,O,C[l+14],V,4259657740);
+O=D(O,m,N,M,C[l+1],Y,2763975236);M=D(M,O,m,N,C[l+4],X,1272893353);N=D(N,M,O,m,C[l+7],W,4139469664);m=D(m,N,M,O,C[l+10],V,3200236656);
+O=D(O,m,N,M,C[l+13],Y,681279174);M=D(M,O,m,N,C[l+0],X,3936430074);N=D(N,M,O,m,C[l+3],W,3572445317);m=D(m,N,M,O,C[l+6],V,76029189);
+O=D(O,m,N,M,C[l+9],Y,3654602809);M=D(M,O,m,N,C[l+12],X,3873151461);N=D(N,M,O,m,C[l+15],W,530742520);m=D(m,N,M,O,C[l+2],V,3299628645);
+O=t(O,m,N,M,C[l+0],U,4096336452);M=t(M,O,m,N,C[l+7],T,1126891415);N=t(N,M,O,m,C[l+14],S,2878612391);m=t(m,N,M,O,C[l+5],R,4237533241);
+O=t(O,m,N,M,C[l+12],U,1700485571);M=t(M,O,m,N,C[l+3],T,2399980690);N=t(N,M,O,m,C[l+10],S,4293915773);m=t(m,N,M,O,C[l+1],R,2240044497);
+O=t(O,m,N,M,C[l+8],U,1873313359);M=t(M,O,m,N,C[l+15],T,4264355552);N=t(N,M,O,m,C[l+6],S,2734768916);m=t(m,N,M,O,C[l+13],R,1309151649);
+O=t(O,m,N,M,C[l+4],U,4149444226);M=t(M,O,m,N,C[l+11],T,3174756917);N=t(N,M,O,m,C[l+2],S,718787259);m=t(m,N,M,O,C[l+9],R,3951481745);
+O=K(O,k);m=K(m,h);N=K(N,g);M=K(M,P)}
+var i=B(O)+B(m)+B(N)+B(M);return i.toLowerCase()}
+// Sorting select change event
+document.getElementById('sort-all-dmc').onchange = function() {
+  renderAllDMCList();
+};
+
+</script>
+</body>
+</html>
