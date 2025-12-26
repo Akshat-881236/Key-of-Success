@@ -16,6 +16,22 @@
     <meta name="twitter:card" content="summary" />
     <meta name="theme-color" content="#007bff" />
     <meta name="student-ID" content="881238" />
+    <link rel="canonical" href="https://akshat-881236.github.io/sitemapjs/" />
+    <!-- ===== AUTHOR & NETWORK AUTHORITY ===== -->
+<meta name="author" content="Akshat Prasad">
+<meta name="creator" content="Akshat Prasad">
+<meta name="publisher" content="Akshat Prasad">
+
+<link rel="canonical" href="https://akshat-881236.github.io/Key-of-Success/">
+<link rel="index" href="https://akshat-881236.github.io/sitemapjs/">
+
+<link rel="me" href="https://github.com/Akshat-881236">
+<link rel="me" href="https://akshat-881236.github.io/sitemapjs/">
+<link rel="me" href="mailto:akshatpsd2005@gmail.com">
+<!-- Sitemap.xml Link-->
+<link rel="sitemap" type="application/xml" title="Sitemap" href="https://akshat-881236.github.io/sitemapjs/sitemap.xml">
+<meta name="robots" content="index, follow">
+<script src="https://akshat-881236.github.io/sitemapjs/sitemap.min.js"></script>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -72,7 +88,7 @@
 
     /* active nav */
     .nav .nav-link.active { background:#eef5ff; border-radius:6px; color:var(--brand); font-weight:600; }
-  </style>
+    </style>
 </head>
 <body>
 
@@ -121,8 +137,12 @@
       <div><strong>Address:</strong> Kherki Daula, Gurugram</div>
       <div><strong>Grades:</strong> Nursery — 8th</div>
     </div>
-  </nav>
 
+    <footer class="mt-4 small-note">
+      KEY OF SUCCESS &copy; <span id="copyrightYear"></span><br>
+      <a href="https://akshat-881236.github.io/sitemapjs/">By Akshat Project Hub</a>
+      </footer>
+  </nav>
   <main id="main" class="content" tabindex="-1">
     <div id="view-home">
       <div class="portal-header d-flex justify-content-between">
@@ -296,7 +316,65 @@
       </div>
     </div>
   </div>
+  <script>
+  (function(){
+    // Insert current year
+    document.getElementById('copyrightYear').textContent = new Date().getFullYear();
 
+    // Accessibility + Dropdown handling for Quick Sites
+    const quickBtn = document.getElementById('quickSitesBtn');
+    const quickMenu = document.getElementById('quickSitesMenu');
+
+    if (quickBtn && quickMenu) {
+      quickBtn.addEventListener('click', function(e){
+        const isHidden = quickMenu.hasAttribute('hidden');
+        if (isHidden) {
+          quickMenu.removeAttribute('hidden');
+          quickBtn.setAttribute('aria-expanded','true');
+          // move focus into first link
+          const firstLink = quickMenu.querySelector('a');
+          if (firstLink) firstLink.focus();
+        } else {
+          quickMenu.setAttribute('hidden','');
+          quickBtn.setAttribute('aria-expanded','false');
+        }
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function(ev){
+        if (!quickBtn.contains(ev.target) && !quickMenu.contains(ev.target)) {
+          if (!quickMenu.hasAttribute('hidden')) {
+            quickMenu.setAttribute('hidden','');
+            quickBtn.setAttribute('aria-expanded','false');
+          }
+        }
+      });
+
+      // Keyboard accessibility (Esc closes)
+      document.addEventListener('keydown', function(ev){
+        if (ev.key === 'Escape') {
+          if (!quickMenu.hasAttribute('hidden')) {
+            quickMenu.setAttribute('hidden','');
+            quickBtn.setAttribute('aria-expanded','false');
+            quickBtn.focus();
+          }
+        }
+      });
+    }
+
+    // Make <details> summary aria-expanded reflect actual state
+    document.querySelectorAll('details').forEach(d => {
+      const s = d.querySelector('summary');
+      if (!s) return;
+      const update = () => {
+        const expanded = d.hasAttribute('open');
+        s.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      };
+      d.addEventListener('toggle', update);
+      update();
+    });
+  })();
+</script>
   <!-- Dependencies -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
