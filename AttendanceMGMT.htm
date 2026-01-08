@@ -1,0 +1,944 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Key Of Success — Monthwise Attendance Management</title>
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+  <!-- Google Font for signature -->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --accent:#2b6cb0;
+      --muted:#6b7280;
+      --bg:#f7fafc;
+      --card:#ffffff;
+      --danger:#e53e3e;
+      --success:#2f855a;
+    }
+    body{ margin:0; font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif; background:var(--bg); color:#111827; }
+    header{ background:linear-gradient(90deg,#1e3a8a,#2b6cb0); color:white; padding:16px 20px; display:flex; align-items:center; gap:12px; }
+    header h1{ margin:0; font-size:18px; letter-spacing:0.5px; }
+    header .subtitle{ font-size:12px; opacity:0.9; margin-left:6px; }
+    .container{ display:flex; gap:18px; padding:18px; }
+    .sidebar{ width:260px; background:var(--card); border-radius:8px; padding:12px; box-shadow:0 1px 4px rgba(2,6,23,0.08); flex-shrink:0; }
+    .main{ flex:1; min-height:70vh; }
+    .card{ background:var(--card); border-radius:8px; padding:12px; box-shadow:0 1px 4px rgba(2,6,23,0.06); margin-bottom:18px; }
+    .navlink{ display:block; padding:10px; border-radius:6px; color:var(--accent); text-decoration:none; font-weight:600; }
+    .navlink.active{ background:rgba(43,108,176,0.08); }
+    .form-row{ display:flex; gap:8px; margin-bottom:8px; }
+    .form-row input, .form-row select, .form-row textarea{ padding:8px; border-radius:6px; border:1px solid #e5e7eb; flex:1; }
+    button.btn{ padding:8px 10px; border-radius:6px; border:0; cursor:pointer; }
+    button.primary{ background:var(--accent); color:white; }
+    button.ghost{ background:transparent; border:1px solid #e5e7eb; }
+    table{ width:100%; border-collapse:collapse; }
+    table th, table td{ text-align:left; padding:8px; border-bottom:1px solid #eef2f7; }
+    .actions i{ font-size:18px; margin-right:10px; cursor:pointer; color:var(--accent); }
+    .muted{ color:var(--muted); font-size:13px; }
+    footer{ padding:12px 20px; text-align:center; font-size:13px; color:var(--muted); background:transparent; }
+
+    /* small helpers */
+    .flex{ display:flex; gap:8px; align-items:center; }
+    .badge{ background:#eef2ff; color:var(--accent); padding:4px 8px; border-radius:999px; font-weight:700; font-size:12px; }
+    .danger{ color:var(--danger); }
+    .success{ color:var(--success); }
+
+    /* Modal */
+    .modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,0.4); display:none; align-items:center; justify-content:center; z-index:60; }
+    .modal{ background:white; border-radius:8px; padding:16px; width:90%; max-width:900px; max-height:85vh; overflow:auto; box-shadow:0 6px 30px rgba(2,6,23,0.3); }
+    .modal.show{ display:block; }
+
+    /* small screens */
+    @media (max-width:900px){
+      .container{ flex-direction:column; padding:12px; }
+      .sidebar{ width:100%; order:2; }
+      .main{ order:1; }
+    }
+
+    /* Expandable links */
+    .expandable ul{ list-style:none; padding-left:12px; margin:6px 0; }
+    .expandable .exp-item{ cursor:pointer; padding:6px 8px; border-radius:6px; }
+    .small-muted{ font-size:12px; color:#64748b; }
+
+    /* signature font for certificate preview */
+    .signature{ font-family: 'Great Vibes', cursive; font-size:28px; color:#111827; }
+  </style>
+</head>
+<body>
+  <header>
+    <i class="bi bi-journal-check" style="font-size:22px"></i>
+    <div>
+      <h1>KEY OF SUCCESS LEARNING POINT <span class="subtitle">A PLACE WHERE STUDENT LEARN NEW THINGS</span></h1>
+      <div class="small-muted">Monthwise Attendance Management System — LocalStorage • SPA</div>
+    </div>
+    <div style="margin-left:auto; display:flex; gap:10px; align-items:center;">
+      <button id="swapSidebarBtn" class="btn ghost" title="Swap sidebar left/right"><i class="bi bi-layout-sidebar-inset-reverse"></i> Swap Sidebar</button>
+      <button id="openAdminBtn" class="btn ghost"><i class="bi bi-gear"></i> Admin</button>
+    </div>
+  </header>
+
+  <div class="container" id="appContainer">
+    <aside class="sidebar card" id="sidebar">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <strong>Navigation</strong>
+        <span class="badge" id="dbCount">0</span>
+      </div>
+
+      <a href="#" class="navlink active" data-view="attendanceEntry">Attendance Entry</a>
+      <a href="#" class="navlink" data-view="attendanceReport">Attendance Report</a>
+      <a href="#" class="navlink" data-view="classPromote">Class Promote</a>
+      <a href="#" class="navlink" data-view="leaveEntry">Leave Entry</a>
+      <a href="#" class="navlink" data-view="recycleBin">Recycle Bin</a>
+
+      <div style="height:1px; background:#eef2f7; margin:12px 0;"></div>
+
+      <div class="expandable">
+        <div class="exp-item" onclick="toggleExp(this)"><i class="bi bi-link-45deg"></i> Project Links</div>
+        <ul style="display:none;">
+          <li class="exp-item">- Documentation</li>
+          <li class="exp-item">- Another Project</li>
+          <li class="exp-item">- Tools</li>
+        </ul>
+
+        <div class="exp-item" onclick="toggleExp(this)"><i class="bi bi-folder"></i> More</div>
+        <ul style="display:none;">
+          <li class="exp-item">- Sub Link A</li>
+          <li class="exp-item">- Sub Link B</li>
+        </ul>
+      </div>
+
+      <div style="height:1px; background:#eef2f7; margin:12px 0;"></div>
+      <div class="small-muted">Owner Contact</div>
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <a href="#" title="Email"><i class="bi bi-envelope"></i></a>
+        <a href="#" title="Website"><i class="bi bi-globe"></i></a>
+        <a href="#" title="Phone"><i class="bi bi-telephone"></i></a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- Attendance Entry -->
+      <section id="attendanceEntry" class="card view">
+        <h3>Attendance Entry</h3>
+        <div class="muted">Enter monthwise attendance. If Student ID exists, fields will autofill.</div>
+
+        <div style="margin-top:12px;">
+          <div class="form-row">
+            <select id="entryMonth" style="width:180px;">
+              <!-- months -->
+            </select>
+            <input id="entryStudentId" placeholder="Student ID (e.g., KOS-1001)" />
+            <button id="findStudentBtn" class="btn ghost">Find</button>
+            <button id="newStudentBtn" class="btn" style="background:#f97316;color:white">New Student</button>
+          </div>
+
+          <div id="studentForm" style="margin-top:12px;">
+            <div class="form-row">
+              <input id="entryName" placeholder="Student Name" />
+              <input id="entryFather" placeholder="Father Name" />
+            </div>
+            <div class="form-row">
+              <input id="entryClass" placeholder="Class (e.g., 8-A)" />
+              <input id="entryTotal" placeholder="Total Lectures (number)" type="number" min="0" />
+            </div>
+            <div class="form-row">
+              <input id="entryPresent" placeholder="Present Count" type="number" min="0" />
+              <input id="entryLeave" placeholder="Leave Count" type="number" min="0" />
+            </div>
+
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <button id="saveAttendanceBtn" class="btn primary">Save Attendance</button>
+              <button id="clearEntryBtn" class="btn ghost">Clear</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Attendance Report -->
+      <section id="attendanceReport" class="card view" style="display:none;">
+        <h3>Attendance Report</h3>
+        <div class="muted">Overview across all recorded months. Attendance ratio and marks out of 10.</div>
+
+        <div style="margin-top:12px; overflow:auto;">
+          <table id="reportTable">
+            <thead>
+              <tr>
+                <th>Student ID</th>
+                <th>Student Name</th>
+                <th>Father Name</th>
+                <th>Class</th>
+                <th>Attendance Ratio</th>
+                <th>Attendance Marks (Out of 10)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Class Promote -->
+      <section id="classPromote" class="card view" style="display:none;">
+        <h3>Class Promotion</h3>
+        <div class="muted">Promote a student. You can also open this by action bar per student.</div>
+
+        <div style="margin-top:12px;">
+          <div class="form-row">
+            <input id="promoteStudentId" placeholder="Student ID to promote" />
+            <button id="findPromoteBtn" class="btn ghost">Find</button>
+          </div>
+
+          <div id="promoteForm" style="margin-top:12px; display:none;">
+            <div class="form-row">
+              <input id="promotePrevClass" placeholder="Previous Class" readonly />
+              <input id="promoteNewClass" placeholder="New Class" />
+            </div>
+            <div class="form-row">
+              <input id="promoteDate" type="date" />
+              <input id="promoteUploadDate" type="date" />
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button id="promoteSaveBtn" class="btn primary">Promote</button>
+              <button id="promoteClearBtn" class="btn ghost">Clear</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Leave Entry -->
+      <section id="leaveEntry" class="card view" style="display:none;">
+        <h3>Leave Entry / Requests</h3>
+        <div class="muted">Leave count may be treated as present for attendance ratio if leave request was submitted.</div>
+
+        <div style="margin-top:12px;">
+          <div class="form-row">
+            <input id="leaveStudentId" placeholder="Student ID for Leave" />
+            <button id="findLeaveBtn" class="btn ghost">Find</button>
+          </div>
+
+          <div id="leaveForm" style="margin-top:12px; display:none;">
+            <div class="form-row">
+              <input id="leaveRequestDate" type="date" />
+              <input id="leaveExpiryDate" type="date" />
+            </div>
+            <div class="form-row">
+              <input id="leaveReason" placeholder="Reason" />
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button id="leaveSaveBtn" class="btn primary">Save Leave Request</button>
+              <button id="leaveClearBtn" class="btn ghost">Clear</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recycle Bin -->
+      <section id="recycleBin" class="card view" style="display:none;">
+        <h3>Recycle Bin</h3>
+        <div class="muted">Deleted student histories are kept here for 84 days. Admin can restore or purge.</div>
+        <div style="margin-top:12px; overflow:auto;">
+          <table id="recycleTable">
+            <thead>
+              <tr><th>Student ID</th><th>Name</th><th>Deleted At</th><th>Actions</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Admin Modal (Interface 5) -->
+      <div class="modal-backdrop" id="adminModal">
+        <div class="modal">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3>ADMIN - CRUD & Commands</h3>
+            <button id="closeAdmin" class="btn ghost">Close</button>
+          </div>
+          <div style="margin-top:8px;" class="muted">Use commands carefully. Some actions are irreversible.</div>
+
+          <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+            <button id="seedSample" class="btn ghost"><i class="bi bi-activity"></i> Seed Sample Data</button>
+            <button id="exportDB" class="btn ghost"><i class="bi bi-download"></i> Export DB (JSON)</button>
+            <button id="importDB" class="btn ghost"><i class="bi bi-upload"></i> Import DB (Paste JSON)</button>
+            <button id="purgeRecycle" class="btn ghost danger"><i class="bi bi-trash"></i> Purge Recycle Bin</button>
+            <button id="restoreAll" class="btn ghost"><i class="bi bi-arrow-counterclockwise"></i> Restore All (Recycle)</button>
+            <button id="clearAllAttendance" class="btn ghost danger"><i class="bi bi-broom"></i> Clear All Attendance</button>
+            <button id="resetAll" class="btn ghost danger"><i class="bi bi-exclamation-triangle"></i> Reset Everything</button>
+            <button id="toggleSidebarDir" class="btn ghost"><i class="bi bi-arrow-left-right"></i> Toggle Sidebar Position</button>
+          </div>
+
+          <hr/>
+          <div>
+            <h4>Manual CRUD — Add / Update Student</h4>
+            <div class="form-row">
+              <input id="adminStudentId" placeholder="Student ID" />
+              <input id="adminStudentName" placeholder="Student Name" />
+            </div>
+            <div class="form-row">
+              <input id="adminStudentFather" placeholder="Father Name" />
+              <input id="adminStudentClass" placeholder="Class" />
+            </div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <button id="adminAddUpdate" class="btn primary">Add/Update Student</button>
+              <button id="adminDeleteStudent" class="btn ghost danger">Delete Student (to Recycle)</button>
+            </div>
+          </div>
+
+          <hr/>
+          <div>
+            <h4>Recycle Bin (Admin)</h4>
+            <div id="adminRecycleList" style="max-height:200px; overflow:auto;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Modal -->
+      <div class="modal-backdrop" id="infoModal">
+        <div class="modal" id="infoContent"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <footer>
+    &copy; <strong>KEY OF SUCCESS LEARNING POINT</strong> • A PLACE WHERE STUDENT LEARN NEW THINGS • Contact: Owner (icons above)
+  </footer>
+
+  <!-- jsPDF for PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    // ==== App State and LocalStorage keys ====
+    const LS_KEYS = {
+      students: 'kos_students_v1',
+      attendance: 'kos_attendance_v1',
+      leaves: 'kos_leaves_v1',
+      promotions: 'kos_promotions_v1',
+      recycle: 'kos_recycle_v1',
+      settings: 'kos_settings_v1'
+    };
+
+    // attendance marks mapping (percentage threshold descending)
+    const MARKS_MAP = [
+      {min:95, marks:10},
+      {min:90, marks:9},
+      {min:85, marks:8},
+      {min:80, marks:7},
+      {min:75, marks:6},
+      {min:70, marks:5},
+      {min:60, marks:4},
+      {min:0, marks:0}
+    ];
+
+    // helpers to manage localStorage objects
+    function load(key, defaultVal){ try{ const v = localStorage.getItem(key); return v? JSON.parse(v): defaultVal; }catch(e){ console.error(e); return defaultVal; } }
+    function save(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+    function nowISO(){ return new Date().toISOString(); }
+    function todayDate(){ return new Date().toISOString().slice(0,10); }
+
+    // initial data containers
+    let students = load(LS_KEYS.students, {});
+    let attendance = load(LS_KEYS.attendance, {}); // key: studentId -> array of {month: 'YYYY-MM', total, present, leave, uploadDate}
+    let leaves = load(LS_KEYS.leaves, {}); // studentId -> array of leave requests {requestDate, expiryDate, reason, uploadDate}
+    let promotions = load(LS_KEYS.promotions, {}); // studentId -> array of promotions
+    let recycleBin = load(LS_KEYS.recycle, {}); // id -> {data:{...}, deletedAt}
+
+    let settings = load(LS_KEYS.settings, {sidebarRight:false});
+
+    // purge recycle older than 84 days on load
+    (function purgeOldRecycle(){
+      const DAYS = 84;
+      const cutoff = Date.now() - DAYS*24*60*60*1000;
+      let changed=false;
+      for(const id in recycleBin){
+        const d = new Date(recycleBin[id].deletedAt).getTime();
+        if(d < cutoff){ delete recycleBin[id]; changed=true; }
+      }
+      if(changed) save(LS_KEYS.recycle, recycleBin);
+    })();
+
+    // DOM refs
+    const navlinks = document.querySelectorAll('.navlink');
+    const views = document.querySelectorAll('.view');
+    const dbCountBadge = document.getElementById('dbCount');
+
+    // Populate months select
+    const monthSelect = document.getElementById('entryMonth');
+    (function fillMonths(){
+      const today = new Date();
+      for(let i=0;i<24;i++){
+        const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+        const val = d.toISOString().slice(0,7);
+        const text = d.toLocaleString(undefined,{month:'long', year:'numeric'});
+        const opt = document.createElement('option');
+        opt.value = val; opt.textContent = text;
+        monthSelect.appendChild(opt);
+      }
+    })();
+
+    // Navigation
+    navlinks.forEach(a=>{
+      a.addEventListener('click', e=>{
+        e.preventDefault();
+        navlinks.forEach(n=>n.classList.remove('active'));
+        a.classList.add('active');
+        const v = a.dataset.view;
+        showView(v);
+      });
+    });
+
+    function showView(viewId){
+      views.forEach(s=>s.style.display = s.id===viewId ? 'block' : 'none');
+      // update report on showing
+      if(viewId==='attendanceReport') renderReport();
+      if(viewId==='recycleBin') renderRecycle();
+    }
+
+    // toggle expandable
+    function toggleExp(el){
+      const next = el.nextElementSibling;
+      if(!next) return;
+      next.style.display = next.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // Update DB count
+    function updateDbCount(){
+      const c = Object.keys(students).length;
+      dbCountBadge.textContent = c;
+      saveAll();
+    }
+
+    function saveAll(){
+      save(LS_KEYS.students, students);
+      save(LS_KEYS.attendance, attendance);
+      save(LS_KEYS.leaves, leaves);
+      save(LS_KEYS.promotions, promotions);
+      save(LS_KEYS.recycle, recycleBin);
+      save(LS_KEYS.settings, settings);
+    }
+
+    // Utility: ensure student exists or create placeholder
+    function ensureStudent(id, data){
+      if(!id) return null;
+      if(!students[id]){
+        if(!data) return null;
+        students[id] = { id, name: data.name||'', father: data.father||'', class: data.class||'', createdAt: nowISO() };
+      } else {
+        // update if provided
+        if(data){
+          students[id].name = data.name || students[id].name;
+          students[id].father = data.father || students[id].father;
+          students[id].class = data.class || students[id].class;
+        }
+      }
+      updateDbCount();
+      return students[id];
+    }
+
+    // Find student button
+    document.getElementById('findStudentBtn').addEventListener('click', ()=>{
+      const id = document.getElementById('entryStudentId').value.trim();
+      if(!id){ alert('Enter Student ID'); return; }
+      const s = students[id];
+      if(s){
+        document.getElementById('entryName').value = s.name;
+        document.getElementById('entryFather').value = s.father;
+        document.getElementById('entryClass').value = s.class;
+        alert('Student found and autofilled.');
+      } else {
+        if(confirm('Student not found. Create new student record?')){
+          document.getElementById('entryName').focus();
+        }
+      }
+    });
+
+    document.getElementById('newStudentBtn').addEventListener('click', ()=>{
+      // clear form and allow manual create
+      document.getElementById('entryStudentId').value = '';
+      document.getElementById('entryName').value = '';
+      document.getElementById('entryFather').value = '';
+      document.getElementById('entryClass').value = '';
+      document.getElementById('entryStudentId').focus();
+    });
+
+    // Save attendance
+    document.getElementById('saveAttendanceBtn').addEventListener('click', ()=>{
+      const month = document.getElementById('entryMonth').value;
+      const id = document.getElementById('entryStudentId').value.trim();
+      const name = document.getElementById('entryName').value.trim();
+      const father = document.getElementById('entryFather').value.trim();
+      const cls = document.getElementById('entryClass').value.trim();
+      const total = parseInt(document.getElementById('entryTotal').value) || 0;
+      const present = parseInt(document.getElementById('entryPresent').value) || 0;
+      const leaveCount = parseInt(document.getElementById('entryLeave').value) || 0;
+
+      if(!id || !name){ alert('Student ID and Name required.'); return; }
+
+      ensureStudent(id, {name, father, class:cls});
+      // save attendance entry
+      attendance[id] = attendance[id] || [];
+      // check if same month exists -> replace
+      const existingIdx = attendance[id].findIndex(e=>e.month===month);
+      const entryObj = { month, total, present, leave: leaveCount, uploadDate: nowISO() };
+      if(existingIdx>=0) attendance[id][existingIdx] = entryObj;
+      else attendance[id].push(entryObj);
+
+      saveAll();
+      alert('Attendance saved.');
+      clearEntryForm();
+      renderReport();
+    });
+
+    document.getElementById('clearEntryBtn').addEventListener('click', clearEntryForm);
+    function clearEntryForm(){
+      document.getElementById('entryStudentId').value='';
+      document.getElementById('entryName').value='';
+      document.getElementById('entryFather').value='';
+      document.getElementById('entryClass').value='';
+      document.getElementById('entryTotal').value='';
+      document.getElementById('entryPresent').value='';
+      document.getElementById('entryLeave').value='';
+    }
+
+    // Render attendance report
+    function computeReportForStudent(id){
+      const att = attendance[id] || [];
+      let totalLect = 0, totalPresent = 0, totalLeavesCounted=0;
+      for(const e of att){
+        totalLect += (e.total||0);
+        // leave treated as present only if there exists a leave request for that student with requestDate before uploadDate
+        const leaveCnt = e.leave || 0;
+        const hasLeaveRequest = (leaves[id] || []).some(l=>{
+          // if leave request uploadDate earlier than attendance upload date OR same month
+          const attMonth = e.month;
+          const reqMonth = l.requestDate ? l.requestDate.slice(0,7) : '';
+          // treat leave count as present if leave request month equals attendance month OR requestDate <= upload
+          return reqMonth === attMonth || new Date(l.uploadDate) <= new Date(e.uploadDate);
+        });
+        const countedLeave = hasLeaveRequest ? leaveCnt : 0;
+        totalLeavesCounted += countedLeave;
+        totalPresent += (e.present||0) + countedLeave;
+      }
+      const ratio = totalLect>0 ? (totalPresent/totalLect*100) : 0;
+      const marks = MARKS_MAP.find(m=>ratio>=m.min).marks;
+      return { totalLect, totalPresent, ratio: +ratio.toFixed(2), marks };
+    }
+
+    function renderReport(){
+      const tbody = document.querySelector('#reportTable tbody');
+      tbody.innerHTML = '';
+      for(const id in students){
+        const s = students[id];
+        const rpt = computeReportForStudent(id);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${id}</td>
+          <td>${s.name}</td>
+          <td>${s.father||''}</td>
+          <td>${s.class||''}</td>
+          <td>${rpt.ratio}% (${rpt.totalPresent}/${rpt.totalLect||0})</td>
+          <td>${rpt.marks}</td>
+          <td class="actions">
+            <i class="bi bi-info-circle-fill" title="Info" data-action="info" data-id="${id}"></i>
+            <i class="bi bi-download" title="Download Certificate" data-action="download" data-id="${id}"></i>
+            <i class="bi bi-arrow-up-square" title="Promote" data-action="promote" data-id="${id}"></i>
+            <i class="bi bi-file-earmark-person" title="Leave" data-action="leave" data-id="${id}"></i>
+            <i class="bi bi-trash" title="Delete (Recycle)" data-action="delete" data-id="${id}"></i>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      // action delegates
+      tbody.querySelectorAll('i').forEach(i=>{
+        i.addEventListener('click',(e)=>{
+          const act = i.dataset.action;
+          const id = i.dataset.id;
+          if(act==='info') openInfo(id);
+          if(act==='download') downloadCertificate(id);
+          if(act==='promote') openPromoteFor(id);
+          if(act==='leave') openLeaveFor(id);
+          if(act==='delete') recycleStudent(id);
+        });
+      });
+
+      updateDbCount();
+    }
+
+    // Info modal
+    function openInfo(id){
+      const s = students[id];
+      if(!s){ alert('Student not found'); return; }
+      const att = attendance[id] || [];
+      const prom = promotions[id] || [];
+      const lv = leaves[id] || [];
+
+      const content = document.getElementById('infoContent');
+      content.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3>Student Info — ${id}</h3>
+          <button id="closeInfo" class="btn ghost">Close</button>
+        </div>
+        <div class="muted">Name: ${s.name} • Father: ${s.father||''} • Class: ${s.class||''}</div>
+        <hr/>
+        <h4>Attendance History</h4>
+        <div style="max-height:180px; overflow:auto;">
+          ${att.length ? '<ul>' + att.map(a=>`<li>${a.month} — Total: ${a.total}, Present: ${a.present}, Leave: ${a.leave} (Uploaded: ${new Date(a.uploadDate).toLocaleString()})</li>`).join('') + '</ul>' : '<div class="muted">No attendance records.</div>'}
+        </div>
+        <h4>Promotion History</h4>
+        <div style="max-height:140px; overflow:auto;">${prom.length ? '<ul>' + prom.map(p=>`<li>${p.promotionDate} • ${p.prevClass} → ${p.newClass} (Uploaded: ${new Date(p.uploadDate).toLocaleString()})</li>`).join('') + '</ul>' : '<div class="muted">No promotion records.</div>'}</div>
+        <h4>Leave History</h4>
+        <div style="max-height:140px; overflow:auto;">${lv.length ? '<ul>' + lv.map(l=>`<li>${l.requestDate} → ${l.expiryDate} • ${l.reason} (Uploaded: ${new Date(l.uploadDate).toLocaleString()})</li>`).join('') + '</ul>' : '<div class="muted">No leave requests.</div>'}</div>
+        <div style="margin-top:12px; display:flex; gap:8px;">
+          <button id="infoClose" class="btn ghost">Close</button>
+        </div>
+      `;
+      document.getElementById('infoModal').classList.add('show');
+      content.querySelectorAll('#closeInfo, #infoClose').forEach(b=>b.addEventListener('click', ()=>document.getElementById('infoModal').classList.remove('show')));
+    }
+
+    // Download PDF (certificate)
+    async function downloadCertificate(id){
+      const s = students[id];
+      if(!s){ alert('Student not found'); return; }
+      const rpt = computeReportForStudent(id);
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({unit:'pt', format:'a4'});
+      const left = 60;
+      const top = 80;
+      doc.setFontSize(18);
+      doc.text('CERTIFICATE OF ATTENDANCE', 210, top, {align:'center'});
+      doc.setFontSize(11);
+      doc.text(`CERTIFICATE NO. :- ${Math.floor(Math.random()*900000)+100000}      DATED :- ${todayDate()}`, left, top+30);
+      doc.setFontSize(12);
+      const yr = `${new Date().getFullYear()-1} - ${new Date().getFullYear()}`;
+      const body = `This is to certify that ${s.name} S/O ${s.father || 'N/A'} enrolled under ${id} reading in ${s.class || 'N/A'} has maintain the Attendance Ratio of ${rpt.ratio}% through out the academic year : ${yr}. Securing ${rpt.marks} out of 10 in Annual Report for the component of Attendance in each Subject.`;
+      doc.setFontSize(12);
+      doc.text(doc.splitTextToSize(body, 480), left, top+80);
+      // signature
+      doc.setFontSize(20);
+      doc.text('Authorized Signatory', left, top+240);
+      doc.setFontSize(28);
+      // signature using a cursive-like font fallback
+      doc.text('Akshat Prasad', left, top+275);
+      doc.save(`Certificate-${id}.pdf`);
+    }
+
+    // Recycle student
+    function recycleStudent(id){
+      if(!students[id]){ alert('Not found'); return; }
+      if(!confirm(`Move ${id} (${students[id].name}) to Recycle Bin?`)) return;
+      // move student + related histories to recycle
+      recycleBin[id] = { data:{
+        student: students[id],
+        attendance: attendance[id] || [],
+        leaves: leaves[id] || [],
+        promotions: promotions[id] || []
+      }, deletedAt: nowISO() };
+      delete students[id];
+      delete attendance[id];
+      delete leaves[id];
+      delete promotions[id];
+      saveAll();
+      renderReport();
+      alert('Moved to Recycle Bin. Will be retained for 84 days.');
+    }
+
+    // render recycle bin
+    function renderRecycle(){
+      const tbody = document.querySelector('#recycleTable tbody');
+      tbody.innerHTML = '';
+      for(const id in recycleBin){
+        const rec = recycleBin[id];
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${id}</td><td>${rec.data.student.name}</td><td>${new Date(rec.deletedAt).toLocaleString()}</td>
+          <td><button class="btn ghost" data-id="${id}" data-action="restore">Restore</button>
+          <button class="btn ghost danger" data-id="${id}" data-action="purge">Purge</button></td>`;
+        tbody.appendChild(tr);
+      }
+      tbody.querySelectorAll('button').forEach(b=>{
+        b.addEventListener('click', ()=>{
+          const id = b.dataset.id; const act = b.dataset.action;
+          if(act==='restore'){
+            if(confirm('Restore student from recycle?')){
+              const obj = recycleBin[id];
+              students[id] = obj.data.student;
+              attendance[id] = obj.data.attendance || [];
+              leaves[id] = obj.data.leaves || [];
+              promotions[id] = obj.data.promotions || [];
+              delete recycleBin[id];
+              saveAll();
+              renderRecycle();
+              renderReport();
+              alert('Restored.');
+            }
+          } else if(act==='purge'){
+            if(confirm('Permanently delete? This cannot be undone.')){
+              delete recycleBin[id];
+              saveAll();
+              renderRecycle();
+              alert('Purged.');
+            }
+          }
+        });
+      });
+    }
+
+    // Open promote UI for a student
+    function openPromoteFor(id){
+      showView('classPromote');
+      document.querySelector('.navlink[data-view="classPromote"]').classList.add('active');
+      document.getElementById('promoteStudentId').value = id;
+      document.getElementById('findPromoteBtn').click();
+    }
+
+    document.getElementById('findPromoteBtn').addEventListener('click', ()=>{
+      const id = document.getElementById('promoteStudentId').value.trim();
+      if(!id) return alert('Enter Student ID');
+      const s = students[id];
+      if(!s) return alert('Student not found');
+      document.getElementById('promotePrevClass').value = s.class || '';
+      document.getElementById('promoteNewClass').value = '';
+      document.getElementById('promoteDate').value = todayDate();
+      document.getElementById('promoteUploadDate').value = todayDate();
+      document.getElementById('promoteForm').style.display = 'block';
+    });
+
+    document.getElementById('promoteSaveBtn').addEventListener('click', ()=>{
+      const id = document.getElementById('promoteStudentId').value.trim();
+      const prev = document.getElementById('promotePrevClass').value;
+      const nf = document.getElementById('promoteNewClass').value.trim();
+      const pd = document.getElementById('promoteDate').value || todayDate();
+      if(!id || !nf) return alert('Student and New Class required');
+      promotions[id] = promotions[id] || [];
+      const obj = { prevClass: prev, newClass: nf, promotionDate: pd, uploadDate: nowISO() };
+      promotions[id].push(obj);
+      // update student's class
+      if(students[id]) students[id].class = nf;
+      saveAll();
+      alert('Promotion recorded.');
+      document.getElementById('promoteForm').style.display = 'none';
+      renderReport();
+    });
+
+    document.getElementById('promoteClearBtn').addEventListener('click', ()=>{
+      document.getElementById('promoteStudentId').value='';
+      document.getElementById('promoteForm').style.display='none';
+    });
+
+    // Leave actions
+    function openLeaveFor(id){
+      showView('leaveEntry');
+      document.querySelector('.navlink[data-view="leaveEntry"]').classList.add('active');
+      document.getElementById('leaveStudentId').value = id;
+      document.getElementById('findLeaveBtn').click();
+    }
+
+    document.getElementById('findLeaveBtn').addEventListener('click', ()=>{
+      const id = document.getElementById('leaveStudentId').value.trim();
+      if(!id) return alert('Enter Student ID');
+      const s = students[id];
+      if(!s) return alert('Student not found');
+      document.getElementById('leaveForm').style.display = 'block';
+      document.getElementById('leaveRequestDate').value = todayDate();
+      document.getElementById('leaveExpiryDate').value = todayDate();
+      document.getElementById('leaveReason').value = '';
+    });
+
+    document.getElementById('leaveSaveBtn').addEventListener('click', ()=>{
+      const id = document.getElementById('leaveStudentId').value.trim();
+      const req = document.getElementById('leaveRequestDate').value;
+      const exp = document.getElementById('leaveExpiryDate').value;
+      const reason = document.getElementById('leaveReason').value.trim();
+      if(!id || !req || !exp) return alert('All fields required.');
+      leaves[id] = leaves[id] || [];
+      leaves[id].push({ requestDate: req, expiryDate: exp, reason, uploadDate: nowISO() });
+      saveAll();
+      alert('Leave saved.');
+      document.getElementById('leaveForm').style.display='none';
+    });
+
+    document.getElementById('leaveClearBtn').addEventListener('click', ()=>{
+      document.getElementById('leaveStudentId').value = '';
+      document.getElementById('leaveForm').style.display='none';
+    });
+
+    // ADMIN modal open/close
+    document.getElementById('openAdminBtn').addEventListener('click', ()=>document.getElementById('adminModal').classList.add('show'));
+    document.getElementById('closeAdmin').addEventListener('click', ()=>document.getElementById('adminModal').classList.remove('show'));
+
+    // Admin — commands
+    document.getElementById('seedSample').addEventListener('click', ()=>{
+      if(!confirm('Seed sample data? This will add demo students and attendance.')) return;
+      // add sample
+      const demo = {
+        'KOS-1001': {id:'KOS-1001', name:'Aman Kumar', father:'Ramesh Kumar', class:'8-A', createdAt: nowISO()},
+        'KOS-1002': {id:'KOS-1002', name:'Priya Singh', father:'Suresh Singh', class:'9-B', createdAt: nowISO()},
+        'KOS-1003': {id:'KOS-1003', name:'Rahul Verma', father:'Anil Verma', class:'10-A', createdAt: nowISO()}
+      };
+      Object.assign(students, demo);
+      // attendance sample
+      attendance['KOS-1001'] = [
+        {month: new Date().toISOString().slice(0,7), total:30, present:28, leave:1, uploadDate: nowISO()}
+      ];
+      attendance['KOS-1002'] = [
+        {month: new Date().toISOString().slice(0,7), total:30, present:25, leave:2, uploadDate: nowISO()}
+      ];
+      attendance['KOS-1003'] = [
+        {month: new Date().toISOString().slice(0,7), total:30, present:20, leave:0, uploadDate: nowISO()}
+      ];
+      saveAll();
+      renderReport();
+      alert('Sample data seeded.');
+    });
+
+    document.getElementById('exportDB').addEventListener('click', ()=>{
+      const snapshot = { students, attendance, leaves, promotions, recycleBin, settings };
+      const blob = new Blob([JSON.stringify(snapshot, null,2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'kos-db-backup.json'; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('importDB').addEventListener('click', ()=>{
+      const txt = prompt('Paste JSON export here:');
+      if(!txt) return;
+      try{
+        const obj = JSON.parse(txt);
+        if(confirm('Import will replace current DB. Continue?')){
+          students = obj.students || {};
+          attendance = obj.attendance || {};
+          leaves = obj.leaves || {};
+          promotions = obj.promotions || {};
+          recycleBin = obj.recycleBin || {};
+          settings = obj.settings || settings;
+          saveAll();
+          updateDbCount();
+          renderReport();
+          alert('Imported.');
+        }
+      }catch(e){ alert('Invalid JSON'); }
+    });
+
+    document.getElementById('purgeRecycle').addEventListener('click', ()=>{
+      if(confirm('Purge entire recycle bin permanently?')){ recycleBin={}; saveAll(); renderRecycle(); alert('Purged'); }
+    });
+
+    document.getElementById('restoreAll').addEventListener('click', ()=>{
+      if(confirm('Restore ALL items from recycle?')) {
+        for(const id in recycleBin){
+          const obj = recycleBin[id];
+          students[id] = obj.data.student;
+          attendance[id] = obj.data.attendance || [];
+          leaves[id] = obj.data.leaves || [];
+          promotions[id] = obj.data.promotions || [];
+        }
+        recycleBin = {};
+        saveAll();
+        renderReport();
+        renderRecycle();
+        alert('Restored all.');
+      }
+    });
+
+    document.getElementById('clearAllAttendance').addEventListener('click', ()=>{
+      if(confirm('Clear ALL attendance records?')){ attendance = {}; saveAll(); renderReport(); alert('Cleared attendance'); }
+    });
+
+    document.getElementById('resetAll').addEventListener('click', ()=>{
+      if(confirm('Reset EVERYTHING (students, attendance, leaves, promotions, recycle, settings)?')) {
+        students = {}; attendance={}; leaves={}; promotions={}; recycleBin={}; settings={sidebarRight:false};
+        saveAll(); renderReport(); renderRecycle(); alert('Reset complete.');
+      }
+    });
+
+    document.getElementById('toggleSidebarDir').addEventListener('click', ()=>{
+      settings.sidebarRight = !settings.sidebarRight;
+      applySidebarPosition();
+      save(LS_KEYS.settings, settings);
+    });
+
+    // Admin manual CRUD
+    document.getElementById('adminAddUpdate').addEventListener('click', ()=>{
+      const id = document.getElementById('adminStudentId').value.trim();
+      const name = document.getElementById('adminStudentName').value.trim();
+      const father = document.getElementById('adminStudentFather').value.trim();
+      const cls = document.getElementById('adminStudentClass').value.trim();
+      if(!id || !name) return alert('ID and Name required.');
+      students[id] = { id, name, father, class:cls, createdAt: nowISO() };
+      saveAll(); updateDbCount(); renderReport();
+      alert('Student added/updated.');
+    });
+
+    document.getElementById('adminDeleteStudent').addEventListener('click', ()=>{
+      const id = document.getElementById('adminStudentId').value.trim();
+      if(!id) return alert('Enter ID');
+      if(!students[id]) return alert('Student not found');
+      if(confirm('Move student to Recycle Bin?')){
+        recycleStudent(id);
+        renderRecycle();
+      }
+    });
+
+    // Admin recycle list render
+    function renderAdminRecycle(){
+      const el = document.getElementById('adminRecycleList');
+      el.innerHTML = '';
+      for(const id in recycleBin){
+        const rec = recycleBin[id];
+        const div = document.createElement('div');
+        div.style.display='flex'; div.style.justifyContent='space-between'; div.style.gap='8px'; div.style.padding='6px 0';
+        div.innerHTML = `<div><strong>${id}</strong> • ${rec.data.student.name}</div><div><button class="btn ghost" data-id="${id}" data-act="restore">Restore</button><button class="btn ghost danger" data-id="${id}" data-act="purge">Purge</button></div>`;
+        el.appendChild(div);
+      }
+      el.querySelectorAll('button').forEach(b=>{
+        b.addEventListener('click', ()=>{
+          const id = b.dataset.id, act = b.dataset.act;
+          if(act==='restore'){ students[id]=recycleBin[id].data.student; attendance[id]=recycleBin[id].data.attendance||[]; leaves[id]=recycleBin[id].data.leaves||[]; promotions[id]=recycleBin[id].data.promotions||[]; delete recycleBin[id]; saveAll(); renderAdminRecycle(); renderReport(); alert('Restored'); }
+          else if(act==='purge'){ if(confirm('Permanently delete?')){ delete recycleBin[id]; saveAll(); renderAdminRecycle(); alert('Purged'); } }
+        });
+      });
+    }
+
+    // Open admin modal also updates recycle list
+    document.getElementById('openAdminBtn').addEventListener('click', renderAdminRecycle);
+
+    // Sidebar swap
+    document.getElementById('swapSidebarBtn').addEventListener('click', ()=>{
+      settings.sidebarRight = !settings.sidebarRight;
+      applySidebarPosition();
+      save(LS_KEYS.settings, settings);
+    });
+
+    function applySidebarPosition(){
+      const container = document.getElementById('appContainer');
+      const sidebar = document.getElementById('sidebar');
+      if(settings.sidebarRight){
+        container.style.flexDirection = 'row-reverse';
+      } else {
+        container.style.flexDirection = 'row';
+      }
+    }
+    applySidebarPosition();
+
+    // initial render
+    renderReport();
+    renderRecycle();
+    updateDbCount();
+
+    // close modals on backdrop click
+    document.getElementById('adminModal').addEventListener('click', (e)=>{ if(e.target===document.getElementById('adminModal')) document.getElementById('adminModal').classList.remove('show'); });
+    document.getElementById('infoModal').addEventListener('click', (e)=>{ if(e.target===document.getElementById('infoModal')) document.getElementById('infoModal').classList.remove('show'); });
+
+    // maintain showing active nav on load
+    document.querySelectorAll('.navlink').forEach(a=>{ if(a.classList.contains('active')) showView(a.dataset.view); });
+
+    // small note: signature font uses Google Fonts; PDF uses jsPDF plain text
+    // Data: students, attendance, leaves, promotions, recycle persisted in localStorage keys described at top.
+  </script>
+</body>
+</html>
