@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://akshat-881236.github.io/Key-of-Success/</loc>
+    <lastmod>2026-01-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Attendance Management -->
+  <url>
+    <loc>https://akshat-881236.github.io/Key-of-Success/AttendanceMGMT.htm</loc>
+    <lastmod>2026-01-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- DMC -->
+  <url>
+    <loc>https://akshat-881236.github.io/Key-of-Success/DMC.htm</loc>
+    <lastmod>2026-01-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Owner -->
+  <url>
+    <loc>https://akshat-881236.github.io/Key-of-Success/owner.htm</loc>
+    <lastmod>2026-01-18</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Privacy Policy -->
+  <url>
+    <loc>https://akshat-881236.github.io/Key-of-Success/privacy_policy.htm</loc>
+    <lastmod>2026-01-18</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Terms & Conditions -->
+  <url>
+    <loc>https://akshat-881236.github.io/Key-of-Success/term_condition.htm</loc>
+    <lastmod>2026-01-18</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Google Verification -->
+  <url>
+    <loc>https://akshat-881236.github.io/Key-of-Success/googled18820a1f652dbfe.htm</loc>
+    <lastmod>2026-01-18</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+</urlset>
