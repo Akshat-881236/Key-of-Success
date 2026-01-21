@@ -286,6 +286,64 @@
       .logo { height: 50px; width: 50px; }
       th, td { font-size: 0.9em; }
     }
+
+    /* ================== PRINT ONLY DMC TEMPLATE ================== */
+@media print {
+
+  /* Hide EVERYTHING by default */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /*
+    Show ONLY the rendered DMC
+    (anything that CONTAINS data-dmcno comes from dmc-template)
+  */
+  body :has([data-dmcno]),
+  body :has([data-dmcno]) * {
+    visibility: visible !important;
+  }
+
+  /* Position DMC properly on page */
+  body :has([data-dmcno]) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  /* Remove all UI junk */
+  header,
+  nav,
+  footer,
+  form,
+  button,
+  .btn,
+  .alert,
+  .activity-log {
+    display: none !important;
+  }
+
+
+  /* Table safety */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    page-break-inside: avoid;
+  }
+
+  tr, td, th {
+    page-break-inside: avoid;
+  }
+
+  /* Clean print look */
+  * {
+    background: white !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
+
   </style>
 </head>
 <script src="https://akshat-881236.github.io/TrackerJS/MITLicense-Term-of-Use--Privacy.min.js"></script>
@@ -627,73 +685,131 @@ function showSection(section) {
   }
 }
 
-/* ==== STUDENT INTERFACE ==== */
+/* ==== STUDENT INTERFACE (FIXED) ==== */
+
+/* --- Helper: normalize name safely --- */
+function normalizeName(str) {
+  return (str || "")
+    .toUpperCase()
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
+/* --- Activity log (unchanged) --- */
 function saveStudentActivity(action) {
   let log = JSON.parse(localStorage.getItem('student_activity_log') || "[]");
-  log.unshift({action, time: new Date().toLocaleString()});
-  if(log.length > 30) log = log.slice(0,30);
+  log.unshift({ action, time: new Date().toLocaleString() });
+  if (log.length > 30) log = log.slice(0, 30);
   localStorage.setItem('student_activity_log', JSON.stringify(log));
   renderStudentActivityLog();
 }
 
 function renderStudentActivityLog() {
   const log = JSON.parse(localStorage.getItem('student_activity_log') || "[]");
-  if(!log.length) document.getElementById('student-activity-log').innerHTML = "No recent activity.";
-  else document.getElementById('student-activity-log').innerHTML =
-    log.map(l => `<div>🕒 <b>${l.time}</b> - ${l.action}</div>`).join('');
+  const el = document.getElementById('student-activity-log');
+  if (!el) return;
+
+  if (!log.length) {
+    el.innerHTML = "No recent activity.";
+  } else {
+    el.innerHTML = log
+      .map(l => `<div>🕒 <b>${l.time}</b> - ${l.action}</div>`)
+      .join('');
+  }
 }
 renderStudentActivityLog();
 
-document.getElementById('student-search-form').onsubmit = function(e) {
+/* --- STUDENT SEARCH --- */
+document.getElementById('student-search-form').onsubmit = function (e) {
   e.preventDefault();
+
   const formid = document.getElementById('student-formid').value.trim();
-  const name = document.getElementById('student-name').value.trim().toUpperCase();
+  const nameInput = normalizeName(
+    document.getElementById('student-name').value
+  );
   const year = document.getElementById('student-year').value.trim();
   const dmcno = document.getElementById('student-dmcno').value.trim();
-  if(!formid || !name) {
-    showAlert('student-search-alert', 'Please fill Form ID and Name.');
-    return;
-  }
-  if(!year && !dmcno) {
-    showAlert('student-search-alert', 'Fill either Academic Year or DMC No.');
-    return;
-  }
-  // Search logic
-  let found = getAllDMC().filter(d =>
-    d.formid === formid &&
-    d.name.toUpperCase() === name &&
-    ((year && d.academicYear == year) || (dmcno && d.dmcno == dmcno))
-  );
-  saveStudentActivity(
-  `Searched DMC (Form ID: ${formid}, Name: ${name}, Year: ${year || '-'}, DMC No: ${dmcno || '-'})`
-);
-  if(found.length === 0) {
-    document.getElementById('student-dmc-view').innerHTML = "";
-    showAlert('student-search-alert', 'No DMC found for the provided details.', true);
-    return;
-  }
-  // Special codes check
-  const specialSubj = found[0].subjects.find(s => SPECIAL_CODES.includes(s.status));
-  if(specialSubj) {
-    document.getElementById('student-dmc-view').innerHTML = "";
-    showAlert('student-search-alert',
-      `<b>Result Withheld:</b> Your result is not available for the following reason: <b>${specialSubj.status}</b>.<br>
-      <b>Explanation:</b> ${specialCodeExplanation(specialSubj.status)}<br>
-      Please contact the centre for further details.`, true);
-    return;
-  }
+
+  // Clear previous UI state
+  document.getElementById('student-dmc-view').innerHTML = "";
   document.getElementById('student-search-alert').innerHTML = "";
+
+  /* --- Validation (clear & predictable) --- */
+  if (!formid) {
+    showAlert('student-search-alert', 'Form ID is required.');
+    return;
+  }
+  if (!nameInput) {
+    showAlert('student-search-alert', 'Student Name is required.');
+    return;
+  }
+  if (!year && !dmcno) {
+    showAlert(
+      'student-search-alert',
+      'Please enter either Academic Year OR DMC Number.'
+    );
+    return;
+  }
+
+  /* --- Search logic (DMC No has priority) --- */
+  const all = getAllDMC();
+  let found = all.filter(d => {
+    const storedName = normalizeName(d.name);
+    const storedForm = (d.formid || "").trim();
+
+    if (dmcno) {
+      return (
+        storedForm === formid &&
+        storedName.includes(nameInput) &&
+        String(d.dmcno) === dmcno
+      );
+    }
+
+    return (
+      storedForm === formid &&
+      storedName.includes(nameInput) &&
+      String(d.academicYear) === year
+    );
+  });
+
+  saveStudentActivity(
+    `Searched DMC (Form ID: ${formid}, Name: ${nameInput}, Year: ${year || '-'}, DMC No: ${dmcno || '-'})`
+  );
+
+  if (!found.length) {
+    showAlert(
+      'student-search-alert',
+      'No DMC found. Please verify Form ID, Name, and Year/DMC No.'
+    );
+    return;
+  }
+
+  /* --- Handle special codes WITHOUT blocking result --- */
+  const specialSubj = found[0].subjects.find(
+    s => s.status && SPECIAL_CODES.includes(s.status)
+  );
+
+  if (specialSubj) {
+    showAlert(
+      'student-search-alert',
+      `<b>Notice:</b> This result contains a special status (<b>${specialSubj.status}</b>).<br>
+       ${specialCodeExplanation(specialSubj.status)}`
+    );
+  }
+
+  // Always render DMC
   renderDMC(found[0], document.getElementById('student-dmc-view'));
 };
 
+/* --- Special code explanation (unchanged) --- */
 function specialCodeExplanation(code) {
-  switch(code) {
+  switch (code) {
     case "ABST": return "Absent in the Examination.";
-    case "UMC": return "Unfair Means Case. Result withheld.";
-    case "RL": return "Result Later. Due to pending clarification/documentation.";
+    case "UMC": return "Unfair Means Case. Result under review.";
+    case "RL": return "Result Later due to pending clarification.";
     case "UFM": return "Unfair Means. Under investigation.";
-    case "NR": return "Not Reported by Examiner.";
-    case "NE": return "Not Eligible for Result.";
+    case "NR": return "Marks not reported by examiner.";
+    case "NE": return "Not eligible for result.";
     default: return "";
   }
 }
